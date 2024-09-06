@@ -13,7 +13,7 @@ import googleLoginReducer from './slices/googleLoginSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getStoresReducer from './slices/getStoresSlice';
 import activateStoreReducer from './slices/activateStoreSlice';
-
+import  storeSuggestionReducer from './slices/storeSuggestionSlice';
 const rootReducer = combineReducers({
     signUp: signUpReducer,
     login: loginReducer,
@@ -23,7 +23,8 @@ const rootReducer = combineReducers({
     chat: chatReducer,
     google: googleLoginReducer,
     stores: getStoresReducer,
-    activateStore: activateStoreReducer
+    activateStore: activateStoreReducer,
+    storeSuggestions:storeSuggestionReducer,
 });
 
 const persistConfig = {

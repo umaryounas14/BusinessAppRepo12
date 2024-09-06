@@ -21,7 +21,9 @@ const { width } = Dimensions.get('window');
 
 const Dashboard = ({ navigation }) => {
   const dispatch = useDispatch();
-  const stores = useSelector((state) => state.stores); // Adjust based on your state structure
+  const stores = useSelector((state) => state.stores);
+  console.log('store-=-=-=-=-=-=-=s',stores)
+  // Adjust based on your state structure
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('accessToken');

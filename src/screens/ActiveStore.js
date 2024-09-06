@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -11,12 +11,20 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Block, Button, Input, theme} from 'galio-framework';
 import {materialTheme} from '../constants';
 import DropdownInput from '../components/DropDown';
-import {useDispatch} from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux';
 import {activateMyStore} from '../redux/slices/activateStoreSlice';
+import {fetchSuggestions } from '../redux/slices/storeSuggestionSlice';
 import DatePickerModal from '../components/DatePickerModal'; // Import the DatePickerModal
 const {width} = Dimensions.get('window');
 const ActivateStore = ({navigation, route}) => {
   const dispatch = useDispatch();
+  const suggestionStatus = useSelector((state) => state.storeSuggestions?.status || [] );
+  const suggestions = useSelector((state) => state.storeSuggestions?.data || []);
+  
+
+// const suggestionError = useSelector((state) => state.suggestions.error);
+const [searchTerm, setSearchTerm] = useState('');
+const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
   const {storeId} = route.params || {storeId: null};
   const [selectedItem, setSelectedItem] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -134,27 +142,48 @@ const ActivateStore = ({navigation, route}) => {
 
     return Object.keys(newErrors).length === 0;
   };
+  // const stores = useSelector((state) => state.stores.activateMyStore);
+// console.log('stores-=-=-=-=-=-=-=-=-=',stores)
+/////////////////////////doneworking///////////////
   const handleSubmit = () => {
     const isValid = validateForm();
     if (!isValid) {
       return;
     }
-  
-    console.log('Payload being dispatched:', { ...formData, store_id: storeId });
-  
-    dispatch(activateMyStore({ ...formData, store_id: storeId }))
+    // console.log('Payload being dispatched:', { ...formData, store_id: storeId });
+    // dispatch(activateMyStore({ ...formData, store_id: storeId }))
+    dispatch(activateMyStore({ ...formData,store_id:storeId}))
+
       .unwrap()  // Unwrap the returned action to get the actual payload or error
       .then(response => {
-        console.log('Activation successful:', response);
-        navigation.goBack();  // Navigate back on success
+        const storeId = response?.body?.id;  
+        console.log('Activation successful-------------------0000:', storeId);
+        navigation.goBack(storeId);  // Navigate back on success
       })
       .catch(err => {
         console.error('Activation failed:', err);
         // You can also show an error message to the user here
       });
   };
-  
-  
+  //////////////////////////upworking/////////
+  // useEffect(() => {
+  //   console.log('Suggestions from Redux:', suggestions);
+  // }, [suggestions]);
+
+  const handleSearchInputChange = (text) => {
+    setSearchTerm(text);
+    if (text.length > 2) { // Fetch suggestions if the text length is greater than 2
+      dispatch(fetchSuggestions({ businessType: formData.businessType, search: text }));
+      setSuggestionsVisible(true);
+  } else {
+    setSuggestionsVisible(false);
+  }
+  };
+  useEffect(() => {
+    if (searchTerm.length > 2) {
+      dispatch(fetchSuggestions({ businessType: formData.businessType, search: searchTerm }));
+    }
+  }, [searchTerm, formData.businessType, dispatch]);
   // const handleSubmit = () => {
   //   const isValid = validateForm();
   //   if (!isValid) {
@@ -341,12 +370,34 @@ const ActivateStore = ({navigation, route}) => {
                   autoCapitalize="none"
                   bgColor="transparent"
                   placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
-                  onChangeText={text => handleInputChange('businessName', text)}
+                  onChangeText={handleSearchInputChange}
+                  value={searchTerm}
+                  // onChangeText={text => handleInputChange('businessName', text)}
                   style={[
                     styles.input,
                     {borderRadius: 15, borderColor: '#ddd'},
                   ]}
                 />
+               {isSuggestionsVisible && suggestionStatus === 'succeeded' && (
+                  <ScrollView style={styles.suggestionsContainer}>
+                    {suggestions.map(suggestion => (
+                      <TouchableOpacity
+                        key={suggestion.id}
+                        onPress={() => {
+                          setFormData(prevState => ({
+                            ...prevState,
+                            businessName: suggestion.name,
+                          }));
+                          setSearchTerm(suggestion.name);
+                          setSuggestionsVisible(false);
+                        }}
+                        style={styles.suggestionItem}
+                      >
+                        <Text>{suggestion.name}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                )}
                 {errors.businessName && (
                   <Text style={styles.errorText}>{errors.businessName}</Text>
                 )}
@@ -616,6 +667,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginRight: 'auto',
     paddingHorizontal:30
+  },
+  suggestionsContainer: {
+    maxHeight: 150,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 15,
+    marginTop: 5,
+  },
+  suggestionItem: {
+    padding: 10,
   },
 });
 

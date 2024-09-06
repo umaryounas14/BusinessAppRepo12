@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { BASE_URL, getAllStores } from '../../constants/endpoints';
-
 // Utility function to get access token
 const getAccessToken = async () => {
   try {
@@ -17,22 +16,26 @@ const getAccessToken = async () => {
 // Async thunk to fetch stores
 export const getStores = createAsyncThunk(
   'stores/getStores',
-  async ({ page = 1, limit = 5 } = {}) => {
+  async ({ page = 1, limit = 5, search} = {}) => {
     try {
       const accessToken = await getAccessToken();
       const response = await axios({
         method: 'get',
-        url: `${BASE_URL}${getAllStores}?page=${page}&limit=${limit}`,
+        url: `${BASE_URL}${getAllStores}?page=${page}&limit=${limit}&search=${search}`,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
       });
+      // console.log('response get response store id ----------------',response.data)
+      // const storeId = response.data.body.response(store => store.id);
+      // console.log('Store IDs:----------------------------', storeId);
       return {
         data: response.data.body.response,
         totalPages: response.data.body.totalPages,
         currentPage: page,
       };
+     
     } catch (error) {
       console.error('Stores Error:', error);
       throw error;

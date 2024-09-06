@@ -26,14 +26,13 @@ const MyStores = ({navigation}) => {
   const stores = useSelector((state) => state.stores.data);
   const status = useSelector((state) => state.stores.status);
   const error = useSelector((state) => state.stores.error);
-
+  // console.log('stores',stores)
 
   useEffect(() => {
     if (status === 'idle') {
       dispatch(getStores());
     }
   }, [dispatch, status]);
-
   // Transform store data into a format compatible with StoreTableView
   const formattedStoreData = [
     ['Name', 'Email', 'Address', 'Type', 'Status', 'Action'],
@@ -53,7 +52,6 @@ const MyStores = ({navigation}) => {
     ['blueberry pre-rolls', '200', '900', '500', '55%'],
     ['phat panda', '590', '800', '450', '56%'],
   ];
-
 
   const userFeedback = [
     ['Query', 'feedback', 'Rating(1-5)'],
@@ -111,7 +109,7 @@ const MyStores = ({navigation}) => {
   };
 
 
-  
+
 
   return (
     <DrawerSceneWrapper>
