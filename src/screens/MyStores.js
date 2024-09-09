@@ -18,14 +18,14 @@ import StoreTableView from '../components/StoreTableView';
 import TableView from '../components/TableView';
 import BarChartComponent from '../components/BarChart';
 import DrawerSceneWrapper from '../components/drawerSceneWrapper';
-import { getStores } from '../redux/slices/getStoresSlice';
+import {getStores} from '../redux/slices/getStoresSlice';
 
 const MyStores = ({navigation}) => {
   const dispatch = useDispatch();
 
-  const stores = useSelector((state) => state.stores.data);
-  const status = useSelector((state) => state.stores.status);
-  const error = useSelector((state) => state.stores.error);
+  const stores = useSelector(state => state.stores.data);
+  const status = useSelector(state => state.stores.status);
+  const error = useSelector(state => state.stores.error);
   // console.log('stores',stores)
 
   useEffect(() => {
@@ -108,156 +108,160 @@ const MyStores = ({navigation}) => {
     navigation.openDrawer();
   };
 
-
-
-
   return (
     <DrawerSceneWrapper>
-    <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.announcementBanner}>
-          <Text style={styles.announcementText}>Activate Your Store!</Text>
-        </View>
-        {/* <TouchableOpacity onPress={openDrawer}>
+      <View style={styles.container}>
+        <ScrollView>
+          <View style={styles.announcementBanner}>
+            <Text style={styles.announcementText}>Activate Your Store!</Text>
+          </View>
+          {/* <TouchableOpacity onPress={openDrawer}>
           <New name="menu" size={30} style={{marginLeft: 10, marginTop: 30}} />
         </TouchableOpacity> */}
-        <TouchableOpacity
-          style={[
-            styles.iconContainer1,
-            {
-              top: 62,
-              right: 60,
-            },
-          ]}>
-          <Icon name="bell" size={24} color="black" />
-          <View style={styles.notificationBadge}>
-            <Text style={styles.notificationText}>5</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.iconContainer,
-            {
-              top: 59,
-              right: 20,
-              backgroundColor: '#099D63',
-              borderRadius: 20,
-              width: 30,
-              height: 30,
-              position: 'absolute',
-              alignItems: 'center',
-              justifyContent: 'center',
-            },
-          ]}>
-          <Icon name="user" size={24} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity  onPress={() => navigation.navigate('ProductScreen')}
-          style={[styles.addButton, {top: height * 0.15, right: width * 0.02 , zIndex: 10 }]}>
-          <Text style={styles.addButtonText}>+ Add Store</Text>
-        </TouchableOpacity>
-        <Block flex middle>
-          <View behavior="padding" enabled>
-            <View
-              style={{
-                padding: 5,
-                marginBottom: 10,
-                left: 10,
-                top: height * 0.13,
-              }}>
-              <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>
-                My Stores
+          <TouchableOpacity
+            style={[
+              styles.iconContainer1,
+              {
+                top: 62,
+                right: 60,
+              },
+            ]}>
+            <Icon name="bell" size={24} color="black" />
+            <View style={styles.notificationBadge}>
+              <Text style={styles.notificationText}>5</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.iconContainer,
+              {
+                top: 59,
+                right: 20,
+                backgroundColor: '#099D63',
+                borderRadius: 20,
+                width: 30,
+                height: 30,
+                position: 'absolute',
+                alignItems: 'center',
+                justifyContent: 'center',
+              },
+            ]}>
+            <Icon name="user" size={24} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ProductScreen')}
+            style={[
+              styles.addButton,
+              {top: height * 0.15, right: width * 0.02, zIndex: 10},
+            ]}>
+            <Text style={styles.addButtonText}>+ Add Store</Text>
+          </TouchableOpacity>
+          <Block flex middle>
+            <View behavior="padding" enabled>
+              <View
+                style={{
+                  padding: 5,
+                  marginBottom: 10,
+                  left: 10,
+                  top: height * 0.13,
+                }}>
+                <Text
+                  style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>
+                  My Stores
+                </Text>
+              </View>
+              <View style={{padding: 10, marginTop: height * 0.1}}>
+                <StoreTableView data={formattedStoreData} />
+              </View>
+            </View>
+          </Block>
+          <Block flex>
+            <Text style={styles.dataTitle}>Overview</Text>
+            <View style={styles.blocksContainer}>
+              <View style={styles.block}>
+                <Text style={styles.impression}>Total Products</Text>
+                <Text style={styles.impressionCount}>32.4K</Text>
+                <Text style={styles.dataView}>View Data</Text>
+              </View>
+              <View style={styles.block}>
+                <Text style={styles.impression}>Total Active Products</Text>
+                <Text style={styles.impressionCount}>11.5K</Text>
+                <Text style={styles.dataView}>View Data</Text>
+              </View>
+            </View>
+            <View style={styles.blocksContainer1}>
+              <View style={styles.block}>
+                <Text style={styles.impression}>Impressions</Text>
+                <Text style={styles.impressionCount}>2344</Text>
+                <Text style={styles.dataView}>View Stores</Text>
+              </View>
+              <View style={styles.block}>
+                <Text style={styles.impression}>CTR Stores</Text>
+                <Text style={styles.impressionCount}>3.5k</Text>
+                <Text style={styles.dataView}>View Products</Text>
+              </View>
+            </View>
+            <View style={styles.blocksContainer1}>
+              <View style={styles.block2}>
+                <Text style={styles.impression}>CTR Add to Cart</Text>
+                <Text style={styles.impressionCount}>200</Text>
+                <Text style={styles.dataView}>View Stores</Text>
+              </View>
+            </View>
+          </Block>
+          <Block flex middle>
+            <View style={styles.tableViewContainer}>
+              <Text style={styles.tableViewTitle}>Top Queries</Text>
+              <TableView data={topQuries} />
+            </View>
+          </Block>
+          <Block flex middle>
+            <View style={styles.tableViewContainer}>
+              <Text style={styles.tableViewTitle}>
+                Product Performance in Queries
+              </Text>
+              <Text style={{marginLeft: 20}}>Query matches:</Text>
+              <TableView data={performanceData} />
+            </View>
+          </Block>
+          <Block flex middle>
+            <View style={styles.tableViewContainer}>
+              <Text style={styles.tableViewTitle}>User Feedback</Text>
+              <TableView data={userFeedback} />
+            </View>
+          </Block>
+          <Block flex middle>
+            <View style={styles.tableViewContainer}>
+              <Text style={styles.tableViewTitle}>Missed Opportunities</Text>
+              <TableView data={missedOpportunites} />
+            </View>
+          </Block>
+          <Block flex middle>
+            <View style={styles.tableViewContainer}>
+              <Text style={styles.tableViewTitle}>
+                Search behavior analysis:
+              </Text>
+              <Text style={{marginLeft: 20}}>
+                • <Text style={{fontWeight: 'bold'}}>Peak Search times</Text>:
+                Most Queries are entered between 6PM-9PM
+              </Text>
+              <Text style={{marginLeft: 20}}>
+                • <Text style={{fontWeight: 'bold'}}>Device Usage</Text>: 70%
+                mobile, 20% desktop, 5% tablet
               </Text>
             </View>
-            <View style={{padding: 10, marginTop: height * 0.1}}>
-              <StoreTableView data={formattedStoreData} />
+          </Block>
+          <Block flex middle>
+            <View style={styles.tableViewContainer}>
+              <Text style={styles.tableViewTitle}>Campaign Performance</Text>
+              <Text style={{marginLeft: 20}}>
+                Marketing Camapign Performance:
+              </Text>
+              <TableView data={campaignPerformanceData} />
             </View>
-          </View>
-        </Block>
-        <Block flex >
-        <Text style={styles.dataTitle}>Overview</Text>
-          <View style={styles.blocksContainer}>
-            <View style={styles.block}>
-              <Text style={styles.impression}>Total Products</Text>
-              <Text style={styles.impressionCount}>32.4K</Text>
-              <Text style={styles.dataView}>View Data</Text>
-            </View>
-            <View style={styles.block}>
-              <Text style={styles.impression}>Total Active Products</Text>
-              <Text style={styles.impressionCount}>11.5K</Text>
-              <Text style={styles.dataView}>View Data</Text>
-            </View>
-          </View>
-          <View style={styles.blocksContainer1}>
-            <View style={styles.block}>
-              <Text style={styles.impression}>Impressions</Text>
-              <Text style={styles.impressionCount}>2344</Text>
-              <Text style={styles.dataView}>View Stores</Text>
-            </View>
-            <View style={styles.block}>
-              <Text style={styles.impression}>CTR Stores</Text>
-              <Text style={styles.impressionCount}>3.5k</Text>
-              <Text style={styles.dataView}>View Products</Text>
-            </View>
-          </View>
-          <View style={styles.blocksContainer1}>
-            <View style={styles.block2}>
-              <Text style={styles.impression}>CTR Add to Cart</Text>
-              <Text style={styles.impressionCount}>200</Text>
-              <Text style={styles.dataView}>View Stores</Text>
-            </View>
-          </View>
-        </Block>
-        <Block flex middle>
-          <View style={styles.tableViewContainer}>
-            <Text style={styles.tableViewTitle}>Top Queries</Text>
-            <TableView data={topQuries} />
-          </View>
-        </Block>
-        <Block flex middle>
-          <View style={styles.tableViewContainer}>
-            <Text style={styles.tableViewTitle}>
-              Product Performance in Queries
-            </Text>
-            <Text style={{marginLeft: 20}}>Query matches:</Text>
-            <TableView data={performanceData} />
-          </View>
-        </Block>
-        <Block flex middle>
-          <View style={styles.tableViewContainer}>
-            <Text style={styles.tableViewTitle}>User Feedback</Text>
-            <TableView data={userFeedback} />
-          </View>
-        </Block>
-        <Block flex middle>
-          <View style={styles.tableViewContainer}>
-            <Text style={styles.tableViewTitle}>Missed Opportunities</Text>
-            <TableView data={missedOpportunites} />
-          </View>
-        </Block>
-        <Block flex middle>
-          <View style={styles.tableViewContainer}>
-            <Text style={styles.tableViewTitle}>Search behavior analysis:</Text>
-            <Text style={{marginLeft: 20}}>
-              • <Text style={{fontWeight: 'bold'}}>Peak Search times</Text>:
-              Most Queries are entered between 6PM-9PM
-            </Text>
-            <Text style={{marginLeft: 20}}>
-              • <Text style={{fontWeight: 'bold'}}>Device Usage</Text>:
-              70% mobile, 20% desktop, 5% tablet
-            </Text>
-          </View>
-        </Block>
-        <Block flex middle>
-          <View style={styles.tableViewContainer}>
-            <Text style={styles.tableViewTitle}>
-              Campaign Performance
-            </Text>
-            <Text style={{marginLeft: 20}}>Marketing Camapign Performance:</Text>
-            <TableView data={campaignPerformanceData} />
-          </View>
-        </Block>
-      </ScrollView>
-    </View>
+          </Block>
+        </ScrollView>
+      </View>
     </DrawerSceneWrapper>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -11,23 +11,28 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Block, Button, Input, theme} from 'galio-framework';
 import {materialTheme} from '../constants';
 import DropdownInput from '../components/DropDown';
-import {useDispatch,useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {activateMyStore} from '../redux/slices/activateStoreSlice';
-import {fetchSuggestions } from '../redux/slices/storeSuggestionSlice';
+import {fetchSuggestions} from '../redux/slices/storeSuggestionSlice';
 import DatePickerModal from '../components/DatePickerModal'; // Import the DatePickerModal
 const {width} = Dimensions.get('window');
 const ActivateStore = ({navigation, route}) => {
   const dispatch = useDispatch();
-  const suggestionStatus = useSelector((state) => state.storeSuggestions?.status || [] );
-  const suggestions = useSelector((state) => state.storeSuggestions?.data || []);
-  
+  const suggestionStatus = useSelector(
+    state => state.storeSuggestions?.status || [],
+  );
 
-// const suggestionError = useSelector((state) => state.suggestions.error);
-const [searchTerm, setSearchTerm] = useState('');
-const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
+  const suggestions = useSelector(state => state.storeSuggestions?.data?.body?.response || []);
+  console.log('Suggestion Status:', suggestionStatus);
+  console.log('Suggestions:', suggestions);
+  
+  // const suggestionError = useSelector((state) => state.suggestions.error);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
   const {storeId} = route.params || {storeId: null};
   const [selectedItem, setSelectedItem] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedStoreId,setSelectedStoreId] = useState(); // set from suggestions list
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -61,18 +66,18 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
   ];
 
   const businessTypes = [
-    {label: 'Retail', value: '1'},
-    {label: 'Service', value: '2'},
-    {label: 'Manufacturing', value: '3'},
-    {label: 'Wholesale', value: '4'},
-    {label: 'Construction', value: '5'},
-    {label: 'Technology', value: '6'},
-    {label: 'Finance', value: '7'},
-    {label: 'Healthcare', value: '8'},
-    {label: 'Education', value: '9'},
-    {label: 'Entertainment and Media', value: '10'},
-    {label: 'Hospitality', value: '11'},
-    {label: 'Real Estate', value: '12'},
+    {label: 'dispensaries'},
+    // {label: 'Brands', value: '2'},
+    // {label: 'Manufacturing', value: '3'},
+    // {label: 'Wholesale', value: '4'},
+    // {label: 'Construction', value: '5'},
+    // {label: 'Technology', value: '6'},
+    // {label: 'Finance', value: '7'},
+    // {label: 'Healthcare', value: '8'},
+    // {label: 'Education', value: '9'},
+    // {label: 'Entertainment and Media', value: '10'},
+    // {label: 'Hospitality', value: '11'},
+    // {label: 'Real Estate', value: '12'},
   ];
 
   const licenseTypes = [
@@ -142,9 +147,7 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
 
     return Object.keys(newErrors).length === 0;
   };
-  // const stores = useSelector((state) => state.stores.activateMyStore);
-// console.log('stores-=-=-=-=-=-=-=-=-=',stores)
-/////////////////////////doneworking///////////////
+
   const handleSubmit = () => {
     const isValid = validateForm();
     if (!isValid) {
@@ -152,13 +155,12 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
     }
     // console.log('Payload being dispatched:', { ...formData, store_id: storeId });
     // dispatch(activateMyStore({ ...formData, store_id: storeId }))
-    dispatch(activateMyStore({ ...formData,store_id:storeId}))
-
-      .unwrap()  // Unwrap the returned action to get the actual payload or error
+    dispatch(activateMyStore({...formData, store_id: selectedStoreId ?? storeId}))
+      .unwrap() // Unwrap the returned action to get the actual payload or error
       .then(response => {
-        const storeId = response?.body?.id;  
+        const storeId = response?.body?.id;
         console.log('Activation successful-------------------0000:', storeId);
-        navigation.goBack(storeId);  // Navigate back on success
+        navigation.goBack(storeId); // Navigate back on success
       })
       .catch(err => {
         console.error('Activation failed:', err);
@@ -169,44 +171,52 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
   // useEffect(() => {
   //   console.log('Suggestions from Redux:', suggestions);
   // }, [suggestions]);
-
-  const handleSearchInputChange = (text) => {
+  const handleSearchInputChange = text => {
     setSearchTerm(text);
-    if (text.length > 2) { // Fetch suggestions if the text length is greater than 2
+    if (text.length > 2) {
+      // Dispatch action to fetch suggestions
       dispatch(fetchSuggestions({ businessType: formData.businessType, search: text }));
       setSuggestionsVisible(true);
-  } else {
-    setSuggestionsVisible(false);
-  }
+    } else {
+      setSuggestionsVisible(false);
+    }
   };
+  // const handleSearchInputChange = text => {
+  //   console.log('text', text, '_ ', formData.businessType);
+  //   //  handleInputChange('businessName', text);
+  //   setSearchTerm(text);
+  //   if (text.length > 2) {
+  //     // Fetch suggestions if the text length is greater than 2
+  //     dispatch(
+  //       fetchSuggestions({businessType:  formData.businessType,search: text}),
+  //     );
+  //     setSuggestionsVisible(true);
+  //   } else {
+  //     setSuggestionsVisible(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (searchTerm.length > 1) {
+  //     dispatch(
+  //       fetchSuggestions({
+  //         businessType: formData.businessType,
+  //         search: searchTerm,
+  //       }),
+  //     );
+  //   }
+  // }, [searchTerm, formData.businessType, dispatch]);
   useEffect(() => {
     if (searchTerm.length > 2) {
-      dispatch(fetchSuggestions({ businessType: formData.businessType, search: searchTerm }));
+        dispatch(fetchSuggestions({ businessType: formData.businessType, search: searchTerm }))
+            .unwrap()
+            .then(response => {
+                console.log('Fetched suggestions:', response?.data);
+            })
+            .catch(err => {
+                console.error('Error fetching suggestions:', err);
+            });
     }
-  }, [searchTerm, formData.businessType, dispatch]);
-  // const handleSubmit = () => {
-  //   const isValid = validateForm();
-  //   if (!isValid) {
-  //     return;
-  //   }
-  //   console.log('Payload being dispatched:', {...formData, store_id: storeId});
-  //   dispatch(activateMyStore({...formData, store_id: storeId}))
-  //   console.log('first',)
-
-  //     .then(response => {
-
-  //       if (response.meta.requestStatus === 'fulfilled') {
-  //         // Navigate back on successful dispatch
-  //         navigation.goBack();
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.error('Dispatch failed:', err);
-  //       // Handle error if needed
-  //     });
-  // };
-
-  
+}, [searchTerm, formData.businessType, dispatch]);
   const handleDateConfirm = date => {
     if (date) {
       const formattedDate = date.toISOString().split('T')[0]; // Format date as yyyy-mm-dd
@@ -362,6 +372,18 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
                     Business Information
                   </Text>
                 </View>
+                <View style={{marginLeft: 20}}>
+                  <DropdownInput
+                    placeholder="Business Type*"
+                    data={businessTypes}
+                    onSelect={item =>
+                      handleDropdownChange('businessType', item.label)
+                    }
+                  />
+                </View>
+                {errors.businessType && (
+                  <Text style={styles.errorText}>{errors.businessType}</Text>
+                )}
 
                 <Input
                   color="black"
@@ -378,7 +400,7 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
                     {borderRadius: 15, borderColor: '#ddd'},
                   ]}
                 />
-               {isSuggestionsVisible && suggestionStatus === 'succeeded' && (
+                {/* {isSuggestionsVisible && suggestionStatus === 'succeeded' && (
                   <ScrollView style={styles.suggestionsContainer}>
                     {suggestions.map(suggestion => (
                       <TouchableOpacity
@@ -391,30 +413,40 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
                           setSearchTerm(suggestion.name);
                           setSuggestionsVisible(false);
                         }}
-                        style={styles.suggestionItem}
-                      >
+                        style={styles.suggestionItem}>
                         <Text>{suggestion.name}</Text>
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
-                )}
+                )} */}
+       { isSuggestionsVisible && suggestionStatus === 'succeeded' && (
+        <View style={styles.suggestionsContainer}>
+            {suggestions.length > 0 ? (
+                <ScrollView style={styles.suggestionsList}>
+                    {suggestions.map(suggestion => (
+                        <TouchableOpacity
+                            key={suggestion.id}
+                            onPress={() => {
+                                setFormData(prevState => ({
+                                    ...prevState,
+                                    businessName: suggestion.name,
+                                }));
+                                setSearchTerm(suggestion.name);
+                                setSuggestionsVisible(false);
+                            }}
+                            style={styles.suggestionItem}>
+                            <Text>{suggestion.name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            ) : (
+                <Text style={styles.noSuggestions}>No suggestions found</Text>
+            )}
+     </View>)
+}
                 {errors.businessName && (
                   <Text style={styles.errorText}>{errors.businessName}</Text>
                 )}
-
-                <View style={{marginLeft: 20}}>
-                  <DropdownInput
-                    placeholder="Business Type*"
-                    data={businessTypes}
-                    onSelect={item =>
-                      handleDropdownChange('businessType', item.label)
-                    }
-                  />
-                </View>
-                {errors.businessType && (
-                  <Text style={styles.errorText}>{errors.businessType}</Text>
-                )}
-
                 <Input
                   color="black"
                   placeholder="Address Line 1"
@@ -430,7 +462,6 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
                     {borderRadius: 15, borderColor: '#ddd'},
                   ]}
                 />
-
                 <Input
                   color="black"
                   placeholder="Address Line 2"
@@ -446,7 +477,6 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
                     {borderRadius: 15, borderColor: '#ddd'},
                   ]}
                 />
-
                 <Input
                   color="black"
                   placeholder="City*"
@@ -570,7 +600,7 @@ const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
                       borderWidth: 1, // Ensure border width matches other inputs
                       backgroundColor: 'transparent', // Set background color to match other inputs
                       marginBottom: 10, // Add margin if needed to match other inputs
-                      marginTop: 10
+                      marginTop: 10,
                     },
                   ]}
                   onPress={() => setDatePickerVisible(true)} // Show the date picker
@@ -666,17 +696,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 10,
     marginRight: 'auto',
-    paddingHorizontal:30
+    paddingHorizontal: 30,
   },
   suggestionsContainer: {
     maxHeight: 150,
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 15,
-    marginTop: 5,
+    marginTop: 2,
   },
   suggestionItem: {
     padding: 10,
+  },
+  noSuggestions: {
+    padding: 10,
+    textAlign: 'left',
+    color: '#999',
+  },
+  suggestionsList: {
+    maxHeight: 150, // Limit height to prevent overflowing
   },
 });
 
