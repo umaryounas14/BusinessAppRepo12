@@ -19,10 +19,11 @@ import { getStores } from '../redux/slices/getStoresSlice';
 
 const { width } = Dimensions.get('window');
 
-const Dashboard = ({ navigation }) => {
+const Dashboard = ({ navigation,route }) => {
+const store_id=route.params;
   const dispatch = useDispatch();
   const stores = useSelector((state) => state.stores);
-  console.log('store-=-=-=-=-=-=-=s',stores)
+  console.log('store-=-=-=-=-=-=-=sdashborad',store_id)
   // Adjust based on your state structure
   const handleLogout = async () => {
     try {

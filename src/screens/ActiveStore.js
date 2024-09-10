@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -8,31 +8,28 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Block, Button, Input, theme} from 'galio-framework';
-import {materialTheme} from '../constants';
+import { Block, Button, Input, theme } from 'galio-framework';
+import { materialTheme } from '../constants';
 import DropdownInput from '../components/DropDown';
-import {useDispatch, useSelector} from 'react-redux';
-import {activateMyStore} from '../redux/slices/activateStoreSlice';
-import {fetchSuggestions} from '../redux/slices/storeSuggestionSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { activateMyStore } from '../redux/slices/activateStoreSlice';
+import { fetchSuggestions } from '../redux/slices/storeSuggestionSlice';
 import DatePickerModal from '../components/DatePickerModal'; // Import the DatePickerModal
-const {width} = Dimensions.get('window');
-const ActivateStore = ({navigation, route}) => {
-  const dispatch = useDispatch();
-  const suggestionStatus = useSelector(
-    state => state.storeSuggestions?.status || [],
-  );
 
-  const suggestions = useSelector(state => state.storeSuggestions?.data?.body?.response || []);
-  console.log('Suggestion Status:', suggestionStatus);
-  console.log('Suggestions:', suggestions);
-  
-  // const suggestionError = useSelector((state) => state.suggestions.error);
+const { width } = Dimensions.get('window');
+const ActivateStore = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+  const suggestionStatus = useSelector(state => state.storeSuggestions?.status || []);
+  const [suggestions, setSuggestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [businessName, setBusinessName] = useState('');
   const [isSuggestionsVisible, setSuggestionsVisible] = useState(false);
-  const {storeId} = route.params || {storeId: null};
+  const { storeId } = route.params || { storeId: null };
   const [selectedItem, setSelectedItem] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedStoreId,setSelectedStoreId] = useState(); // set from suggestions list
+  const [selectedStoreId, setSelectedStoreId] = useState(null);
+  console.log('selectedStoreId-----------------',selectedStoreId);
+  // set from suggestions list
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -52,50 +49,26 @@ const ActivateStore = ({navigation, route}) => {
   });
   const [errors, setErrors] = useState({});
   const [isDatePickerVisible, setDatePickerVisible] = useState(false); // State for DatePickerModal
-  const [dateMode, setDateMode] = useState('date'); // DatePicker mode
 
   const states = [
-    {label: 'NY', value: '1'},
-    {label: 'AL', value: '2'},
-    {label: 'AK', value: '3'},
-    {label: 'AZ', value: '4'},
-    {label: 'FL', value: '5'},
-    {label: 'HI', value: '6'},
-    {label: 'MD', value: '7'},
-    {label: 'MA', value: '8'},
+    { label: 'NY', value: '1' },
+    { label: 'AL', value: '2' },
+    { label: 'AK', value: '3' },
+    { label: 'AZ', value: '4' },
+    { label: 'FL', value: '5' },
+    { label: 'HI', value: '6' },
+    { label: 'MD', value: '7' },
+    { label: 'MA', value: '8' },
   ];
 
   const businessTypes = [
-    {label: 'dispensaries'},
-    // {label: 'Brands', value: '2'},
-    // {label: 'Manufacturing', value: '3'},
-    // {label: 'Wholesale', value: '4'},
-    // {label: 'Construction', value: '5'},
-    // {label: 'Technology', value: '6'},
-    // {label: 'Finance', value: '7'},
-    // {label: 'Healthcare', value: '8'},
-    // {label: 'Education', value: '9'},
-    // {label: 'Entertainment and Media', value: '10'},
-    // {label: 'Hospitality', value: '11'},
-    // {label: 'Real Estate', value: '12'},
+    { label: 'dispensaries' },
   ];
 
   const licenseTypes = [
-    {label: 'Business License', value: '1'},
-    {label: 'Professional License', value: '2'},
-    {label: 'Driver’s License', value: '3'},
-    {label: 'Medical License', value: '4'},
-    {label: 'Real Estate License', value: '5'},
-    {label: 'Building Permit', value: '6'},
-    {label: 'Food Service License', value: '7'},
-    {label: 'Alcohol License', value: '8'},
-    {label: 'Cosmetology License', value: '9'},
-    {label: 'Insurance License', value: '10'},
-    {label: 'Pharmacy License', value: '11'},
-    {label: 'Education License', value: '12'},
-    {label: 'Legal License', value: '13'},
-    {label: 'Construction License', value: '14'},
-    {label: 'Transportation License', value: '15'},
+    { label: 'Business License', value: '1' },
+    { label: 'Professional License', value: '2' },
+    // Add other license types here
   ];
 
   const handleInputChange = (name, value) => {
@@ -104,12 +77,14 @@ const ActivateStore = ({navigation, route}) => {
       [name]: value,
     }));
   };
+
   const handleDropdownChange = (name, value) => {
     setFormData(prevState => ({
       ...prevState,
       [name]: value,
     }));
   };
+
   const validateForm = () => {
     const newErrors = {};
     const requiredFields = [
@@ -148,75 +123,57 @@ const ActivateStore = ({navigation, route}) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleSubmit = () => {
+  //   const isValid = validateForm();
+  //   if (!isValid) {
+  //     return;
+  //   }
+  //   dispatch(activateMyStore({ ...formData, store_id: selectedStoreId ?? storeId }))
+  //     .unwrap()
+  //     .then(response => {
+  //       const storeId = response?.body?.id;
+  //       navigation.goBack(storeId); // Navigate back on success
+  //     })
+  //     .catch(err => {
+  //       console.error('Activation failed:', err);
+  //     });
+  // };
   const handleSubmit = () => {
-    const isValid = validateForm();
+    const isValid = validateForm(); // Assumes you have a validation function
+  
     if (!isValid) {
       return;
     }
-    // console.log('Payload being dispatched:', { ...formData, store_id: storeId });
-    // dispatch(activateMyStore({ ...formData, store_id: storeId }))
-    dispatch(activateMyStore({...formData, store_id: selectedStoreId ?? storeId}))
-      .unwrap() // Unwrap the returned action to get the actual payload or error
-      .then(response => {
-        const storeId = response?.body?.id;
-        console.log('Activation successful-------------------0000:', storeId);
-        navigation.goBack(storeId); // Navigate back on success
-      })
-      .catch(err => {
+  
+    // Send the selected business ID or fallback to an existing store ID (if applicable)
+    // dispatch(activateMyStore({ ...formData, store_id: selectedStoreId ?? storeId }))
+    dispatch(activateMyStore({ ...formData }))
+      .unwrap()
+      .then((response) => {
+        console.log('Store activated successfully:', response);
+        // const storeId = response?.body?.id; // Get the store ID from the response
+      //   navigation.goBack(); // Navigate back after successful activation
+      // })
+      if (navigation && typeof navigation.goBack === 'function') {
+        navigation.goBack({store_id: selectedStoreId}); // Navigate back after successful activation
+      } else {
+        console.error('Navigation object is undefined or invalid');
+      }
+    })
+      .catch((err) => {
         console.error('Activation failed:', err);
-        // You can also show an error message to the user here
       });
   };
-  //////////////////////////upworking/////////
-  // useEffect(() => {
-  //   console.log('Suggestions from Redux:', suggestions);
-  // }, [suggestions]);
-  const handleSearchInputChange = text => {
-    setSearchTerm(text);
-    if (text.length > 2) {
-      // Dispatch action to fetch suggestions
-      dispatch(fetchSuggestions({ businessType: formData.businessType, search: text }));
+  
+  useEffect(() => {
+    if (searchTerm.length > 2) {
+      dispatch(fetchSuggestions({ businessType: formData.businessType, search: searchTerm }));
       setSuggestionsVisible(true);
     } else {
       setSuggestionsVisible(false);
     }
-  };
-  // const handleSearchInputChange = text => {
-  //   console.log('text', text, '_ ', formData.businessType);
-  //   //  handleInputChange('businessName', text);
-  //   setSearchTerm(text);
-  //   if (text.length > 2) {
-  //     // Fetch suggestions if the text length is greater than 2
-  //     dispatch(
-  //       fetchSuggestions({businessType:  formData.businessType,search: text}),
-  //     );
-  //     setSuggestionsVisible(true);
-  //   } else {
-  //     setSuggestionsVisible(false);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (searchTerm.length > 1) {
-  //     dispatch(
-  //       fetchSuggestions({
-  //         businessType: formData.businessType,
-  //         search: searchTerm,
-  //       }),
-  //     );
-  //   }
-  // }, [searchTerm, formData.businessType, dispatch]);
-  useEffect(() => {
-    if (searchTerm.length > 2) {
-        dispatch(fetchSuggestions({ businessType: formData.businessType, search: searchTerm }))
-            .unwrap()
-            .then(response => {
-                console.log('Fetched suggestions:', response?.data);
-            })
-            .catch(err => {
-                console.error('Error fetching suggestions:', err);
-            });
-    }
-}, [searchTerm, formData.businessType, dispatch]);
+  }, [searchTerm]);
+
   const handleDateConfirm = date => {
     if (date) {
       const formattedDate = date.toISOString().split('T')[0]; // Format date as yyyy-mm-dd
@@ -227,6 +184,35 @@ const ActivateStore = ({navigation, route}) => {
     }
     setDatePickerVisible(false);
   };
+
+  const handleSearchInputChange = text => {
+    setSearchTerm(text);
+    if (text.length > 2) {
+      dispatch(fetchSuggestions({ businessType: formData.businessType, search: text }))
+        .unwrap()
+        .then(response => {
+          setSuggestions(response.body.response); // Update suggestions state with API response
+          setSuggestionsVisible(true);
+        })
+        .catch(err => {
+          console.error('Error fetching suggestions:', err);
+          setSuggestionsVisible(false);
+        });
+    } else {
+      setSuggestionsVisible(false);
+    }
+  };
+
+  const handleSuggestionSelect = item => {
+    setSelectedStoreId(item.id);
+    setFormData(prevState => ({
+      ...prevState,
+      businessName: item.title, // Adjust based on your suggestion structure
+    }));
+    setSearchTerm(item.title);
+    setSuggestionsVisible(false);
+  };
+
   return (
     <View style={styles.container1}>
       <View style={styles.announcementBanner}>
@@ -384,69 +370,65 @@ const ActivateStore = ({navigation, route}) => {
                 {errors.businessType && (
                   <Text style={styles.errorText}>{errors.businessType}</Text>
                 )}
-
                 <Input
                   color="black"
                   placeholder="Business Name*"
-                  type="business-name"
                   autoCapitalize="none"
                   bgColor="transparent"
-                  placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
-                  onChangeText={handleSearchInputChange}
+                  placeholderTextColor="#888"
+                  // style={styles.input}
                   value={searchTerm}
-                  // onChangeText={text => handleInputChange('businessName', text)}
+                  onChangeText={handleSearchInputChange}
                   style={[
                     styles.input,
                     {borderRadius: 15, borderColor: '#ddd'},
                   ]}
                 />
-                {/* {isSuggestionsVisible && suggestionStatus === 'succeeded' && (
-                  <ScrollView style={styles.suggestionsContainer}>
-                    {suggestions.map(suggestion => (
+
+                {/* Suggestions dropdown */}
+                {isSuggestionsVisible && suggestions.length > 0 && (
+                  <View style={styles.suggestionsContainer}>
+                    <ScrollView>
+                      {suggestions.map((item) => (
+                        <TouchableOpacity
+                          key={item.id}
+                          style={styles.suggestionItem}
+                          onPress={() => handleSuggestionSelect(item)}>
+                          <Text style={styles.suggestionText}>{item.title}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
+                  {/* <Input
+                  color="black"
+                  placeholder="Business Name*"
+                    type="business-name"
+                  autoCapitalize="none"
+                  bgColor="transparent"
+                  placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+                
+                  value={searchTerm}
+                  onChangeText={handleSearchInputChange}
+                  style={[
+                    styles.input,
+                    {borderRadius: 15, borderColor: '#ddd'},
+                  ]}
+                />
+
+                {/* Suggestions dropdown */}
+                {/* {isSuggestionsVisible && suggestions.length > 0 && (
+                  <View style={styles.suggestionsContainer}>
+                    {suggestions.map((item, index) => (
                       <TouchableOpacity
-                        key={suggestion.id}
-                        onPress={() => {
-                          setFormData(prevState => ({
-                            ...prevState,
-                            businessName: suggestion.name,
-                          }));
-                          setSearchTerm(suggestion.name);
-                          setSuggestionsVisible(false);
-                        }}
-                        style={styles.suggestionItem}>
-                        <Text>{suggestion.name}</Text>
+                        key={item.id}
+                        style={styles.suggestionItem}
+                        onPress={() => handleSuggestionSelect(item)}>
+                        <Text style={styles.suggestionText}>{item.title}</Text>
                       </TouchableOpacity>
                     ))}
-                  </ScrollView>
-                )} */}
-       { isSuggestionsVisible && suggestionStatus === 'succeeded' && (
-        <View style={styles.suggestionsContainer}>
-            {suggestions.length > 0 ? (
-                <ScrollView style={styles.suggestionsList}>
-                    {suggestions.map(suggestion => (
-                        <TouchableOpacity
-                            key={suggestion.id}
-                            onPress={() => {
-                                setFormData(prevState => ({
-                                    ...prevState,
-                                    businessName: suggestion.name,
-                                }));
-                                setSearchTerm(suggestion.name);
-                                setSuggestionsVisible(false);
-                            }}
-                            style={styles.suggestionItem}>
-                            <Text>{suggestion.name}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-            ) : (
-                <Text style={styles.noSuggestions}>No suggestions found</Text>
-            )}
-     </View>)
-}
-                {errors.businessName && (
-                  <Text style={styles.errorText}>{errors.businessName}</Text>
-                )}
+                  </View>
+                )} */} 
                 <Input
                   color="black"
                   placeholder="Address Line 1"
@@ -699,14 +681,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   suggestionsContainer: {
-    maxHeight: 150,
+    maxHeight: 120,
     borderColor: '#ddd',
+  
     borderWidth: 1,
     borderRadius: 15,
     marginTop: 2,
   },
   suggestionItem: {
-    padding: 10,
+    padding: 5,
   },
   noSuggestions: {
     padding: 10,
@@ -715,6 +698,21 @@ const styles = StyleSheet.create({
   },
   suggestionsList: {
     maxHeight: 150, // Limit height to prevent overflowing
+  },
+  // suggestionsContainer: {
+  //   borderWidth: 1,
+  //   borderColor: '#ddd',
+  //   borderRadius: 5,
+  //   marginTop: 5,
+  //   maxHeight: 200, // Adjust as needed
+  // },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  suggestionText: {
+    fontSize: 16,
   },
 });
 

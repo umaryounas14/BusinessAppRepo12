@@ -12,11 +12,10 @@ const getAccessToken = async () => {
     throw error;
   }
 };
-
 // Async thunk to fetch stores
 export const getStores = createAsyncThunk(
   'stores/getStores',
-  async ({ page = 1, limit = 5, search} = {}) => {
+  async ({ page = 1, limit = 10, search} = {}) => {
     try {
       const accessToken = await getAccessToken();
       const response = await axios({
@@ -27,7 +26,7 @@ export const getStores = createAsyncThunk(
           'Authorization': `Bearer ${accessToken}`,
         },
       });
-      // console.log('response get response store id ----------------',response.data)
+      console.log('API Response:', response);
       // const storeId = response.data.body.response(store => store.id);
       // console.log('Store IDs:----------------------------', storeId);
       return {
@@ -62,11 +61,15 @@ export const getAllStoresSlice = createSlice({
       })
       .addCase(getStores.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        if (action.payload.currentPage === 1) {
-          state.data = action.payload.data; // Replace data if on the first page
-        } else {
-          state.data = [...state.data, ...action.payload.data]; // Append data if not on the first page
-        }
+        // if (action.payload.currentPage === 1) {
+        //   state.data = action.payload.data; // Replace data if on the first page
+        // } else {
+        //   state.data = [...state.data, ...action.payload.data]; // Append data if not on the first page
+        // }
+        // state.totalPages = action.payload.totalPages;
+        // state.currentPage = action.payload.currentPage;
+        
+        state.data = action.payload.data; // Ensure data is correctly assigned
         state.totalPages = action.payload.totalPages;
         state.currentPage = action.payload.currentPage;
       })

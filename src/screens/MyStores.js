@@ -22,30 +22,36 @@ import {getStores} from '../redux/slices/getStoresSlice';
 
 const MyStores = ({navigation}) => {
   const dispatch = useDispatch();
-
-  const stores = useSelector(state => state.stores.data);
-  const status = useSelector(state => state.stores.status);
-  const error = useSelector(state => state.stores.error);
-  // console.log('stores',stores)
-
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(getStores());
-    }
-  }, [dispatch, status]);
+    dispatch(getStores({ page: 1, limit: 10 }));
+  }, [dispatch]);
+  
+  const { data: stores, status, error } = useSelector((state) => state.stores);
+  
+  console.log('Stores data:', stores); 
   // Transform store data into a format compatible with StoreTableView
+  // const formattedStoreData = [
+  //   ['Name', 'Email', 'Address', 'Type', 'Status', 'Action'],
+  //   ...stores.map(store => [
+  //     store.title,
+  //     'N/A', // Email is not provided in the API response
+  //     store.address,
+  //     store.type,
+  //     store.status_label,
+  //     store.status === 'draft' ? 'Activate' : 'Edit',
+  //   ]),
+  // ];
   const formattedStoreData = [
     ['Name', 'Email', 'Address', 'Type', 'Status', 'Action'],
     ...stores.map(store => [
-      store.title,
+      store.title || 'N/A',
       'N/A', // Email is not provided in the API response
-      store.address,
-      store.type,
-      store.status_label,
+      store.address || 'N/A',
+      store.type || 'N/A',
+      store.status_label || 'N/A',
       store.status === 'draft' ? 'Activate' : 'Edit',
     ]),
   ];
-
   const performanceData = [
     ['Product', 'Impressions', 'Sales', 'Clicks', 'Conversion Rate'],
     ['sleepy edibles', '1200', '1200', '300', '25%'],
