@@ -23,35 +23,47 @@ import {getStores} from '../redux/slices/getStoresSlice';
 const MyStores = ({navigation}) => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getStores({ page: 1, limit: 10 }));
+    dispatch(getStores({page: 1, limit: 10}));
   }, [dispatch]);
-  
-  const { data: stores, status, error } = useSelector((state) => state.stores);
-  
-  console.log('Stores data:', stores); 
-  // Transform store data into a format compatible with StoreTableView
-  // const formattedStoreData = [
-  //   ['Name', 'Email', 'Address', 'Type', 'Status', 'Action'],
-  //   ...stores.map(store => [
-  //     store.title,
-  //     'N/A', // Email is not provided in the API response
-  //     store.address,
-  //     store.type,
-  //     store.status_label,
-  //     store.status === 'draft' ? 'Activate' : 'Edit',
-  //   ]),
-  // ];
+
+  const {data: stores, status, error} = useSelector(state => state.stores);
+  console.log('stores,------------------------------------MyStore',stores)
   const formattedStoreData = [
-    ['Name', 'Email', 'Address', 'Type', 'Status', 'Action'],
+    ['Name', 'Email', 'Address', 'Type', 'Status', 'Action','Request'],
     ...stores.map(store => [
       store.title || 'N/A',
       'N/A', // Email is not provided in the API response
       store.address || 'N/A',
       store.type || 'N/A',
       store.status_label || 'N/A',
-      store.status === 'draft' ? 'Activate' : 'Edit',
-    ]),
+      store.status === 'draft' 
+      ? <Text style={styles.activateText}>Activate</Text>
+      : (
+          <TouchableOpacity onPress={() => handleDelete(store.id)}>
+            <Text style={styles.deleteText}>Delete</Text>
+          </TouchableOpacity>
+        ),
+  ]),
+      // store.status === 'draft' ? 'Activate' : 'Delete',
+    
   ];
+  const handleDelete = async (storeId)=>{
+
+    try{
+      const response = await axios.post('https://maryjfinder.com/api/stores/delete', { id: storeId });
+      console.log('response-=-=-=-=delete',response);
+      if (response.status === 200) {
+        console.log('Store deleted successfully:', storeId);
+        // Refetch the stores after successful deletion
+        dispatch(getStores({page: 1, limit: 10}));
+      } else {
+        console.error('Failed to delete store:', response);
+      }
+    } catch (error) {
+      console.error('Error deleting store:', error);
+    }
+    
+  }
   const performanceData = [
     ['Product', 'Impressions', 'Sales', 'Clicks', 'Conversion Rate'],
     ['sleepy edibles', '1200', '1200', '300', '25%'],
@@ -106,7 +118,7 @@ const MyStores = ({navigation}) => {
       '251 South West CT NW, Bellevue, WA 98056',
       'Medical',
       'Activated',
-      'Edit',
+      'Delete',
     ],
   ];
 
@@ -425,6 +437,14 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 20,
     marginLeft: 20,
+  },
+  deleteText: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  activateText: {
+    color: 'green',
+    fontWeight: 'bold',
   },
 });
 

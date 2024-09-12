@@ -29,7 +29,7 @@ const ActivateStore = ({ navigation, route }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedStoreId, setSelectedStoreId] = useState(null);
   console.log('selectedStoreId-----------------',selectedStoreId);
-  // set from suggestions list
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -84,10 +84,13 @@ const ActivateStore = ({ navigation, route }) => {
       [name]: value,
     }));
   };
-
+  const isInt = (value) => {
+    return !isNaN(value) && Number.isInteger(parseFloat(value));
+  };
   const validateForm = () => {
     const newErrors = {};
     const requiredFields = [
+
       'firstName',
       'lastName',
       'phone',
@@ -107,13 +110,9 @@ const ActivateStore = ({ navigation, route }) => {
         newErrors[field] = 'This field is required';
       }
     }
-
-    // Validate phone number (must be numeric)
     if (formData.phone && isNaN(Number(formData.phone))) {
       newErrors.phone = 'Phone number must be numeric';
     }
-
-    // Validate email format
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email must be a valid email address';
     }
@@ -122,38 +121,23 @@ const ActivateStore = ({ navigation, route }) => {
 
     return Object.keys(newErrors).length === 0;
   };
-
-  // const handleSubmit = () => {
-  //   const isValid = validateForm();
-  //   if (!isValid) {
-  //     return;
-  //   }
-  //   dispatch(activateMyStore({ ...formData, store_id: selectedStoreId ?? storeId }))
-  //     .unwrap()
-  //     .then(response => {
-  //       const storeId = response?.body?.id;
-  //       navigation.goBack(storeId); // Navigate back on success
-  //     })
-  //     .catch(err => {
-  //       console.error('Activation failed:', err);
-  //     });
-  // };
   const handleSubmit = () => {
     const isValid = validateForm(); // Assumes you have a validation function
   
     if (!isValid) {
       return;
     }
-  
-    // Send the selected business ID or fallback to an existing store ID (if applicable)
-    // dispatch(activateMyStore({ ...formData, store_id: selectedStoreId ?? storeId }))
-    dispatch(activateMyStore({ ...formData }))
+  const storeIdToUse = selectedStoreId || storeId;
+    if (typeof storeIdToUse === 'undefined' || storeIdToUse === '' || storeIdToUse === null) {
+      if (isInt(formData.businessName)) {
+        storeIdToUse = formData.businessName;
+      }
+    }
+    console.log('storeIdToUse0000000000000000000000000000',storeIdToUse)
+    dispatch(activateMyStore({ ...formData ,store_id: storeIdToUse }))
       .unwrap()
       .then((response) => {
         console.log('Store activated successfully:', response);
-        // const storeId = response?.body?.id; // Get the store ID from the response
-      //   navigation.goBack(); // Navigate back after successful activation
-      // })
       if (navigation && typeof navigation.goBack === 'function') {
         navigation.goBack({store_id: selectedStoreId}); // Navigate back after successful activation
       } else {
@@ -187,6 +171,11 @@ const ActivateStore = ({ navigation, route }) => {
 
   const handleSearchInputChange = text => {
     setSearchTerm(text);
+    setFormData(prevState => ({
+      ...prevState,
+      businessName: text, // Update businessName even if the user types
+    }));
+    setSelectedStoreId(null); // Reset the selected store ID
     if (text.length > 2) {
       dispatch(fetchSuggestions({ businessType: formData.businessType, search: text }))
         .unwrap()
@@ -400,35 +389,7 @@ const ActivateStore = ({ navigation, route }) => {
                     </ScrollView>
                   </View>
                 )}
-                  {/* <Input
-                  color="black"
-                  placeholder="Business Name*"
-                    type="business-name"
-                  autoCapitalize="none"
-                  bgColor="transparent"
-                  placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
-                
-                  value={searchTerm}
-                  onChangeText={handleSearchInputChange}
-                  style={[
-                    styles.input,
-                    {borderRadius: 15, borderColor: '#ddd'},
-                  ]}
-                />
-
-                {/* Suggestions dropdown */}
-                {/* {isSuggestionsVisible && suggestions.length > 0 && (
-                  <View style={styles.suggestionsContainer}>
-                    {suggestions.map((item, index) => (
-                      <TouchableOpacity
-                        key={item.id}
-                        style={styles.suggestionItem}
-                        onPress={() => handleSuggestionSelect(item)}>
-                        <Text style={styles.suggestionText}>{item.title}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                )} */} 
+                  
                 <Input
                   color="black"
                   placeholder="Address Line 1"
@@ -699,13 +660,7 @@ const styles = StyleSheet.create({
   suggestionsList: {
     maxHeight: 150, // Limit height to prevent overflowing
   },
-  // suggestionsContainer: {
-  //   borderWidth: 1,
-  //   borderColor: '#ddd',
-  //   borderRadius: 5,
-  //   marginTop: 5,
-  //   maxHeight: 200, // Adjust as needed
-  // },
+
   suggestionItem: {
     padding: 10,
     borderBottomWidth: 1,

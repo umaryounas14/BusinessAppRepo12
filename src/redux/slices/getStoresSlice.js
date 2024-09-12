@@ -1,8 +1,9 @@
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
-import { BASE_URL, getAllStores } from '../../constants/endpoints';
-// Utility function to get access token
+import {BASE_URL, getAllStores} from '../../constants/endpoints';
+
 const getAccessToken = async () => {
   try {
     const accessToken = await AsyncStorage.getItem('accessToken');
@@ -15,26 +16,24 @@ const getAccessToken = async () => {
 // Async thunk to fetch stores
 export const getStores = createAsyncThunk(
   'stores/getStores',
-  async ({ page = 1, limit = 10, search} = {}) => {
+  async ({page = 1, limit = 10} = {}) => {
     try {
       const accessToken = await getAccessToken();
       const response = await axios({
         method: 'get',
-        url: `${BASE_URL}${getAllStores}?page=${page}&limit=${limit}&search=${search}`,
+        url: `${BASE_URL}${getAllStores}?page=${page}&limit=${limit}`,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
       });
       console.log('API Response:', response);
-      // const storeId = response.data.body.response(store => store.id);
-      // console.log('Store IDs:----------------------------', storeId);
+
       return {
         data: response.data.body.response,
         totalPages: response.data.body.totalPages,
         currentPage: page,
       };
-     
     } catch (error) {
       console.error('Stores Error:', error);
       throw error;
@@ -68,7 +67,7 @@ export const getAllStoresSlice = createSlice({
         // }
         // state.totalPages = action.payload.totalPages;
         // state.currentPage = action.payload.currentPage;
-        
+
         state.data = action.payload.data; // Ensure data is correctly assigned
         state.totalPages = action.payload.totalPages;
         state.currentPage = action.payload.currentPage;

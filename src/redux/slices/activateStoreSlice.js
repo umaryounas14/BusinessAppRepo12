@@ -16,17 +16,13 @@ const getAccessToken = async () => {
 // Adjusted thunk to handle store_id in URL and other data in the request body
 export const activateMyStore = createAsyncThunk(
    'stores/activate',
-  // 'store/activateMyStore',
-  // async ({ store_id, ...data }, { rejectWithValue }) => {
+
     async ({  store_id,...data }, { rejectWithValue }) => {
-      console.log('store_id-=-=-=-=-=-=-=-=-',store_id)
-    // console.log('store_id=======================',store_id)  // Destructure store_id and other data
+    
     try {
       const accessToken = await getAccessToken();
-      // const url = `https://maryjfinder.com/api/stores/activate/${store_id}`;
+     
       const url = `https://maryjfinder.com/api/stores/activate`;
-        // Construct URL with store_id
-        // Construct URL with store_id
 
       // const response = await axios.post(url, {...data, store_id }, {  // Pass data as request body
       const response = await axios.post(url, {...data }, { 
@@ -35,7 +31,7 @@ export const activateMyStore = createAsyncThunk(
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response.data, "actiavted store")
+      // console.log(response.data, "323232323232323actiavted store")
 
       return response.data;
     } catch (error) {
