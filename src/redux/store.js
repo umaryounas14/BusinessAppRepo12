@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import getStoresReducer from './slices/getStoresSlice';
 import activateStoreReducer from './slices/activateStoreSlice';
 import  storeSuggestionReducer from './slices/storeSuggestionSlice';
+import deleteStoreReducer from './slices/deleteStoreSlice';
 const rootReducer = combineReducers({
     signUp: signUpReducer,
     login: loginReducer,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
     stores: getStoresReducer,
     activateStore: activateStoreReducer,
     storeSuggestions:storeSuggestionReducer,
+    deleteStore: deleteStoreReducer
 });
 
 const persistConfig = {

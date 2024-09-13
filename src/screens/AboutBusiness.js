@@ -161,7 +161,8 @@ const AboutBusiness = ({navigation}) => {
                 processing your information in accordance with our Privacy
                 Policy.
               </Text>
-              <Block center flex style={{marginTop: 20}}>
+            
+              <Block center flex style={{marginTop: 20,flexDirection:'row'}}>
                 <Button
                   size="medium"
                   shadowless
@@ -170,7 +171,22 @@ const AboutBusiness = ({navigation}) => {
                   onPress={() => navigation.navigate('AddBusiness')}>
                   Continue
                 </Button>
+
               </Block>
+              <View>
+                <TouchableOpacity  onPress={() => navigation.navigate('Dashboard')}>
+                <Text  style={{
+                  color: '#949494',
+                  textAlign: 'center',
+                  paddingHorizontal: 30,
+                  marginTop: 10,
+                
+                }}> You may want to skip click here 
+                 <Text style={{color:'blue',textDecorationLine:'underline',fontWeight:'500'}}>Skip</Text>
+                 </Text>
+                </TouchableOpacity>
+               
+              </View>
             </Block>
           </Block>
       </Block>

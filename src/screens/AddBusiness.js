@@ -9,7 +9,7 @@ import {
   View,
   Image,
   ScrollView,
-  TouchableOpacity,
+  TouchableOpacity,TextInput
 } from 'react-native';
 import {Block, Button, Input, theme} from 'galio-framework';
 import {materialTheme} from '../constants';
@@ -17,14 +17,22 @@ import {HeaderHeight} from '../constants/utils';
 import DropdownInput from '../components/DropDown';
 import Icon from 'react-native-vector-icons/AntDesign'; 
 const {width} = Dimensions.get('window');
+import DatePickerModal from '../components/DatePickerModal';
 const AddBusiness = ({navigation}) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+ 
+const [selectedDate, setSelectedDate] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [active, setActive] = useState({
     email: false,
     password: false,
+  });
+   const [formData, setFormData] = useState({
+    businessLicenseExpiration: '',
   });
   const handleChange = (name, value) => {
     if (name === 'email') setEmail(value);
@@ -37,7 +45,15 @@ const AddBusiness = ({navigation}) => {
     setSelectedItem(item);
     setDropdownOpen(false);
   };
-
+  // Function to handle date confirmation
+  const handleDateConfirm = (date) => {
+    if (date) {
+      const formattedDate = date.toISOString().split('T')[0]; // Format date as yyyy-mm-dd
+      setSelectedDate(formattedDate);
+    }
+    setDatePickerVisible(false);
+  };
+  
   return (
     <ScrollView>
       <Block flex middle>
@@ -230,18 +246,35 @@ const AddBusiness = ({navigation}) => {
               <View style={{marginLeft: 20}}>
                 <DropdownInput />
               </View>
-              <Input
-                color="black"
-                placeholder="Expiration (mm/dd/yyy)"
-                autoCapitalize="none"
-                bgColor="transparent"
-                placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
-                style={[
-                  styles.input,
-                  active.email ? styles.inputActive : null,
-                  {borderRadius: 15, borderColor: '#ddd'},
-                ]}
-              />
+            
+          <TouchableOpacity
+              style={[
+              styles.input, // Reuse the input style for consistency
+             { 
+            justifyContent: 'center',
+            paddingVertical: 10, 
+            borderRadius: 15, 
+            borderColor: '#ddd', 
+            marginTop: 20, 
+            borderWidth:1,
+            paddingHorizontal:10,
+            color:'#ddd'
+         }
+  ]}
+         onPress={() => setDatePickerVisible(true)}
+     >
+            <Text style={styles.datePickerText}>
+           {selectedDate ||  "Expiration (mm/dd/yyy)"}
+           </Text>
+        </TouchableOpacity>
+
+       <DatePickerModal
+        visible={isDatePickerVisible}
+        onConfirm={handleDateConfirm}
+        onCancel={() => setDatePickerVisible(false)}
+        date={selectedDate ? new Date(selectedDate) : new Date()} // Default to current date if no date selected
+        mode="date"
+        />
               <Input
               placeholder='enter name'
               autoCapitalize='none'
@@ -322,5 +355,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
   },
+  datePickerText:{
+    color:'black'
+  }
 });
 export default AddBusiness;

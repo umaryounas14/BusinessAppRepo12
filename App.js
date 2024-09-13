@@ -191,9 +191,9 @@ const App = () => {
             <Stack.Screen name="BusinessSignUp" component={BusinessSignUp} /> 
             <Stack.Screen name="Main" component={SignUpScreen} />  
             <Stack.Screen name="Verification" component={Verification} /> 
-            <Stack.Screen name="About" component={About} />  
+            <Stack.Screen name="About" component={About} /> 
             <Stack.Screen name="AboutBusiness" component={AboutBusiness} /> 
-            <Stack.Screen name="UpgradePlan" component={UpgradePlan} /> 
+            <Stack.Screen name="UpgradePlan" component={UpgradePlan} />  
             <Stack.Screen name="AddBusiness" component={AddBusiness} />
             <Stack.Screen name="Dashboard" component={DrawerNavigator} />
             <Stack.Screen name="ActivateStore" component={ActivateStore} /> 

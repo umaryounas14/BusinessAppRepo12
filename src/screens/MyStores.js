@@ -19,6 +19,9 @@ import TableView from '../components/TableView';
 import BarChartComponent from '../components/BarChart';
 import DrawerSceneWrapper from '../components/drawerSceneWrapper';
 import {getStores} from '../redux/slices/getStoresSlice';
+import store from '../redux/store';
+import axios from 'axios';
+import {deleteStore} from '../redux/slices/deleteStoreSlice';
 
 const MyStores = ({navigation}) => {
   const dispatch = useDispatch();
@@ -36,34 +39,96 @@ const MyStores = ({navigation}) => {
       store.address || 'N/A',
       store.type || 'N/A',
       store.status_label || 'N/A',
-      store.status === 'draft' 
-      ? <Text style={styles.activateText}>Activate</Text>
-      : (
-          <TouchableOpacity onPress={() => handleDelete(store.id)}>
-            <Text style={styles.deleteText}>Delete</Text>
-          </TouchableOpacity>
-        ),
+      store.status === 'draft' ,
+      store.status_label,
+      (
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() =>handleDeleteStore(store.id)}>
+          <Text style={styles.editButtonText}>Delete</Text>
+        </TouchableOpacity>
+      ),
+    
+      // store.status === 'draft' ? 'Activate' : 'Delete',
+      // ? <Text style={styles.activateText}>Activate</Text>
+      // : (
+      //     <TouchableOpacity onPress={() => handleDelete(store.id)}>
+      //       <Text style={styles.deleteText}>Delete</Text>
+      //     </TouchableOpacity>
+      //   ),
   ]),
       // store.status === 'draft' ? 'Activate' : 'Delete',
     
   ];
-  const handleDelete = async (storeId)=>{
 
-    try{
-      const response = await axios.post('https://maryjfinder.com/api/stores/delete', { id: storeId });
-      console.log('response-=-=-=-=delete',response);
-      if (response.status === 200) {
-        console.log('Store deleted successfully:', storeId);
-        // Refetch the stores after successful deletion
-        dispatch(getStores({page: 1, limit: 10}));
-      } else {
-        console.error('Failed to delete store:', response);
-      }
-    } catch (error) {
-      console.error('Error deleting store:', error);
+  const handleDeleteStore = async (storeId) => {
+    dispatch(deleteStore({ id: storeId }))
+    .unwrap()
+    .then((response) => {
+      console.log('Store activated successfully:', response);
+    if (navigation && typeof navigation.goBack === 'function') {
+      navigation.goBack({store_id: selectedStoreId}); // Navigate back after successful activation
+    } else {
+      console.error('Navigation object is undefined or invalid');
     }
+  })
+    .catch((err) => {
+      console.error('Activation failed:', err);
+    });
+    // setLoading(true); // You can show a loader in your UI
+    // const payload = {
+    //   id:storeId
+    // };
+    // const accessToken = await AsyncStorage.getItem('accessToken');
+    // console.log('payload---------------',payload)
+    // // try {
+    //   const response = await dispatch(deleteStore(payload)); 
+    //   // Dispatch the delete action
+    //   console.log('response--------------handleMyStore',response)
+
+    //   if (response?.meta?.requestStatus === 'fulfilled') {
+    //     Alert.alert('Store deleted successfully');
+    //     // Optionally update the UI or navigate if necessary
+    //   } else {
+    //     Alert.alert('Failed to delete store', response.error?.message || 'Unknown error');
+    //   }
+    // } catch (error) {
+    //   console.error('Error deleting store:', error);
+    //   Alert.alert('Error deleting store', 'Please try again later.');
+    // } finally {
+    //   setLoading(false); // Hide the loader
+    // }
     
-  }
+  };
+  
+//   const handleDelete = async (storeId)=>{
+//     const accessToken = await AsyncStorage.getItem('accessToken');
+//     if (!accessToken) {
+//       console.error('No access token found');
+//       return;
+//     }
+// console.log('delete........',storeId)
+
+//     try{
+//       const response = await axios.post('https://maryjfinder.com/api/stores/delete', { id: storeId });
+//       {headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${accessToken}`,
+//       },}
+//       console.log('response-=-=-=-=delete',response);
+//       if (response.status === 200) {
+//         console.log('Store deleted successfully:', storeId);
+//         // Refetch the stores after successful deletion
+//         // dispatch(getStores({page: 1, limit: 10}));
+//       } else {
+//         console.error('Failed to delete store:', response);
+//       }
+//     } catch (error) {
+//       console.error('Error deleting store:', error);
+//     }
+    
+//   }
+
   const performanceData = [
     ['Product', 'Impressions', 'Sales', 'Clicks', 'Conversion Rate'],
     ['sleepy edibles', '1200', '1200', '300', '25%'],
