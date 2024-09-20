@@ -15,6 +15,9 @@ import {Block, Button, Input, theme} from 'galio-framework';
 import {materialTheme} from '../constants';
 import {HeaderHeight} from '../constants/utils';
 import DropdownInput from '../components/DropDown';
+import Icon from 'react-native-vector-icons/AntDesign';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
 const {width} = Dimensions.get('window');
 const AboutBusiness = ({navigation}) => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -36,9 +39,26 @@ const AboutBusiness = ({navigation}) => {
     setSelectedItem(item);
     setDropdownOpen(false);
   };
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+    phoneNumber: Yup.string()
+      .required('Phone number is required')
+      .matches(/^\d+$/, 'Phone number must be digits only'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    businessName: Yup.string().required('Business Name is required'),
+  });
   return (
     <ScrollView>
+      <View>
+      <TouchableOpacity onPress={()=>navigation.navigate('Dashboard')}
+        style={styles.skiprow}>
+        <Text style={{marginRight: 2, fontWeight: '500', color: "black",fontWeight:'600'}}>Skip Info</Text>
+        <Icon name="right" size={17} color="black" style={{top:3}}/>
+        </TouchableOpacity>
+      </View>
       <Block flex middle>
+      
       {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Icon name="arrowleft" size={24} color="#000" />
           </TouchableOpacity> */}
@@ -47,7 +67,7 @@ const AboutBusiness = ({navigation}) => {
               source={require('../assets/splash.png')}
               style={styles.image}
             />
-          </View>
+      </View>
        <Block middle style={{paddingVertical: theme.SIZES.BASE * 2.625}}>
             <Text
               style={{
@@ -65,6 +85,22 @@ const AboutBusiness = ({navigation}) => {
               </Text>
             </View>
           </Block>
+              {/* Formik form starts */}
+        <Formik
+          initialValues={{
+            firstName: '',
+            lastName: '',
+            phoneNumber: '',
+            email: '',
+            businessName: '',
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            // If validation is successful, proceed to next screen
+            navigation.navigate('AddBusiness');
+          }}
+        >
+          {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
           <Block flex>
             <Block center>
               <Input
@@ -74,12 +110,18 @@ const AboutBusiness = ({navigation}) => {
                 autoCapitalize="none"
                 bgColor="transparent"
                 placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+                onChangeText={handleChange('firstName')}
+                  onBlur={handleBlur('firstName')}
+                  value={values.firstName}
                 style={[
                   styles.input,
                   active.email ? styles.inputActive : null,
                   {borderRadius: 15, borderColor: '#ddd', marginTop: -40},
                 ]}
               />
+                {touched.firstName && errors.firstName && (
+                  <Text style={styles.errorText}>{errors.firstName}</Text>
+                )}
               <Input
                 color="black"
                 placeholder="Last Name*"
@@ -87,12 +129,18 @@ const AboutBusiness = ({navigation}) => {
                 autoCapitalize="none"
                 bgColor="transparent"
                 placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+                onChangeText={handleChange('lastName')}
+                onBlur={handleBlur('lastName')}
+                value={values.lastName}
                 style={[
                   styles.input,
                   active.email ? styles.inputActive : null,
                   {borderRadius: 15, borderColor: '#ddd'},
                 ]}
               />
+                {touched.lastName && errors.lastName && (
+                  <Text style={styles.errorText}>{errors.lastName}</Text>
+                )}
               <Input
                 color="black"
                 placeholder="Phone number*"
@@ -100,27 +148,39 @@ const AboutBusiness = ({navigation}) => {
                 autoCapitalize="none"
                 bgColor="transparent"
                 placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+                onChangeText={handleChange('phoneNumber')}
+                  onBlur={handleBlur('phoneNumber')}
+                  value={values.phoneNumber}
                 style={[
                   styles.input,
                   active.email ? styles.inputActive : null,
                   {borderRadius: 15, borderColor: '#ddd'},
                 ]}
               />
+               {touched.phoneNumber && errors.phoneNumber && (
+                  <Text style={styles.phoneError}>{errors.phoneNumber}</Text>
+                )}
               <Input
                 color="black"
                 placeholder="Email Address*"
                 type="email-address"
                 autoCapitalize="none"
                 bgColor="transparent"
-                onBlur={() => toggleActive('email')}
+                // onBlur={() => toggleActive('email')}
                 onFocus={() => toggleActive('email')}
                 placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+                onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  value={values.email}
                 style={[
                   styles.input,
                   active.email ? styles.inputActive : null,
                   {borderRadius: 15, borderColor: '#ddd'},
                 ]}
               />
+               {touched.email && errors.email && (
+                  <Text style={[styles.errorText,{marginRight:30}]}>{errors.email}</Text>
+                )}
               <View style={{marginTop: 20}}>
                 <Text
                   style={{
@@ -138,12 +198,18 @@ const AboutBusiness = ({navigation}) => {
                 autoCapitalize="none"
                 bgColor="transparent"
                 placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+                onChangeText={handleChange('businessName')}
+                onBlur={handleBlur('businessName')}
+                value={values.businessName}
                 style={[
                   styles.input,
                   active.email ? styles.inputActive : null,
                   {borderRadius: 15, borderColor: '#ddd'},
                 ]}
               />
+               {touched.businessName && errors.businessName && (
+                  <Text style={styles.phoneError}>{errors.businessName}</Text>
+                )}
               <View style={{marginLeft: 20}}>
                 <DropdownInput />
               </View>
@@ -162,40 +228,36 @@ const AboutBusiness = ({navigation}) => {
                 Policy.
               </Text>
             
-              <Block center flex style={{marginTop: 20,flexDirection:'row'}}>
-                <Button
-                  size="medium"
-                  shadowless
-                  color="#20B340"
-                  style={{height: 48}}
-                  onPress={() => navigation.navigate('AddBusiness')}>
-                  Continue
-                </Button>
-
-              </Block>
-              <View>
-                <TouchableOpacity  onPress={() => navigation.navigate('Dashboard')}>
-                <Text  style={{
+              <Block center flex style={{marginTop: 25, flexDirection: 'row'}}>
+                  <Button size="medium" shadowless color="#20B340" style={{height: 48}} onPress={handleSubmit}>
+                    Continue
+                  </Button>
+                </Block>
+              <View style={{flexDirection:"row",justifyContent: "space-evenly",paddingBottom:30}}>
+              <Text  style={{
                   color: '#949494',
                   textAlign: 'center',
-                  paddingHorizontal: 30,
+                  paddingHorizontal:0,
                   marginTop: 10,
-                
-                }}> You may want to skip click here 
-                 <Text style={{color:'blue',textDecorationLine:'underline',fontWeight:'500'}}>Skip</Text>
-                 </Text>
+                }}> You may want to skip</Text>
+                <TouchableOpacity  onPress={() => navigation.navigate('Dashboard')}>
+              
+                 <Text style={{color:'blue', marginTop: 10,textDecorationLine:'underline',fontWeight:'500',  marginLeft:'5%'}}>click here</Text>
+          
                 </TouchableOpacity>
                
               </View>
             </Block>
           </Block>
+            )}
+        </Formik>
       </Block>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  signin: {
+  signin: {          
     marginTop: Platform.OS === 'android' ? -HeaderHeight : 0,
   },
 
@@ -241,6 +303,37 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
   },
+  skiprow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    // alignItems: 'center',
+    // position: 'absolute',
+    right: 5, 
+    top: 10 // or whatever top value fits your layout
+  },
+  infoView:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 2
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 10,
+    marginTop: -10,
+right:80,
+    width: '90%',
+  },
+  phoneError:{
+  color: 'red',
+   fontSize: 12,
+    marginBottom: 10,
+     marginTop: -10,
+    right:65,
+     width: '90%',
+  }
+  
 });
 
 export default AboutBusiness;

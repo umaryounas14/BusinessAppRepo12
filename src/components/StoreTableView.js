@@ -5,7 +5,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView, View, StyleSheet, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { getStores } from '../redux/slices/getStoresSlice'; // Adjust the import path
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 const LoadMoreButton = memo(({ onPress }) => (
   <TouchableOpacity style={styles.loadMoreButton} onPress={onPress}>
@@ -60,71 +60,29 @@ const StoreTableView = () => {
     setModalVisible(false);
     setStoreIdToDelete(null);
   };
-  const confirmDelete = async (storeId) => {
-    setStoreIdToDelete(storeId); // Set store ID to be deleted for debugging purposes
-    console.log('Store ID to delete:working', storeId); // Debugging log to check if correct store ID is passed
 
-    const accessToken = await AsyncStorage.getItem('accessToken');
-    if (!accessToken) {
-      console.error('No access token found');
-      return;
-    }
-    try {
-      const response = await axios.post(
-        `https://maryjfinder.com/api/stores/delete`, 
-        { id: storeId }, // Pass the storeId directly here
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // Include the auth token in headers
-          },
-        }
-      );
-      console.log('Delete Response:', response);
 
-      if (response.status === 200) {
-        // Remove the deleted store from the list
-        const updatedStores = data.filter((store) => store.id !== storeId);
-        dispatch({ type: 'stores/updateStores', payload: updatedStores });
-      } else {
-        console.error('Failed to delete store:', response);
-      }
-    } catch (error) {
-      console.error('Error deleting store:', error);
-    }
-  };
-
-    
-    // try {
-    //   const response = await axios.post(
-    //     `https://maryjfinder.com/api/stores/delete`, 
-    //     { id: storeIdToDelete },
-    //     {headers: {
-    //       Authorization: `Bearer ${accessToken}`, // Include the auth token in headers
-    //     },}
-    //   );
-    //   console.log('Delete Response:', response);
-  
-    //   if (response.status === 200) {
-    //     // Remove the deleted store from the list
-    //     const updatedStores = data.filter((store) => store.id !== storeIdToDelete);
-    //     dispatch({ type: 'stores/updateStores', payload: updatedStores });
-    //     setModalVisible(false); // Close modal
-    //   } else {
-    //     console.error('Failed to delete store:', response);
-    //   }
-    // } catch (error) {
-    //   console.error('Error deleting store:', error);
-    // }
-
-  
-  
-  if (status === 'failed') {
-    return <Text>Error: {error}</Text>;
-  }
   const handleDelete = async (storeId) => {
     console.log('Deleting store with ID:', storeId);
     try {
-      const response = await axios.post('https://maryjfinder.com/api/stores/delete', { id: storeId });
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      console.log('accessToken1111111:', accessToken);
+  
+      if (!accessToken) {
+        console.error('No access token found');
+        return;
+      }
+  
+      const response = await axios.post('https://maryjfinder.com/api/stores/delete', { id: storeId },
+        
+          {
+            headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`, // Include the auth token in headers
+           }, 
+        }
+      );
+      console.log('response from hsndle delete Store Table',response?.data?.id)
       if (response.status === 200) {
         console.log('Store deleted successfully:', storeId);
         // Refetch the stores after successful deletion
@@ -136,8 +94,6 @@ const StoreTableView = () => {
       console.error('Error deleting store:', error);
     }
   };
-  
-
   if (status === 'failed') {
     return <Text>Error: {error}</Text>;
   }
@@ -149,7 +105,7 @@ const StoreTableView = () => {
       'N/A',
       store.address,
       store.type,
-      store.status_label || 'N/A',
+      store.status_label,
       (
         <TouchableOpacity
           key={store.id} // Make sure each TouchableOpacity has a unique key

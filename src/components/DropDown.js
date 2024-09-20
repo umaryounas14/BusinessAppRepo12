@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 15,
-    color: '#949494',
+    color: 'black',
   },
   inputSearchStyle: {
     height: 40,

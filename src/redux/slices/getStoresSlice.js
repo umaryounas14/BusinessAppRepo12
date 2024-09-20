@@ -27,7 +27,7 @@ export const getStores = createAsyncThunk(
           'Authorization': `Bearer ${accessToken}`,
         },
       });
-      console.log('API Response:', response);
+      console.log('API Response: from api getstore ========', response?.data?.body?.response);
 
       return {
         data: response.data.body.response,

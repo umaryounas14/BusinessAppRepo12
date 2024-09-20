@@ -55,7 +55,9 @@ const CustomDrawerContent = ({navigation}) => {
   const getScreenItemStyle = screenName => {
     return selectedScreen === screenName ? styles.selectedItem : styles.item;
   };
-
+  const getLabelStyle = (screenName) => {
+    return selectedScreen === screenName ? { color: 'green' } : { color: 'black' };
+  };
   return (
     <DrawerContentScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
@@ -68,16 +70,18 @@ const CustomDrawerContent = ({navigation}) => {
         label="Dashboard"
         onPress={() => handleScreenPress('Dashboard')}
         style={getScreenItemStyle('Dashboard')}
-        labelStyle={[
-          styles.drawerLabel,
-          selectedScreen === 'Dashboard' && {color: 'green'},
-        ]}
+        // labelStyle={[
+        //   styles.drawerLabel,
+        //   selectedScreen === 'Dashboard' && {color: 'green'},
+        // ]}
+        labelStyle={[styles.drawerLabel, getLabelStyle('Dashboard')]}
         icon={() => <Icon name="dashboard" size={24} color="black" />}
       />
       <DrawerItem
         label="My Stores"
         onPress={() => handleScreenPress('MyStores')}
         style={getScreenItemStyle('MyStores')}
+        labelStyle={getLabelStyle('MyStores')}
         icon={() => <Icon name="store" size={24} color="black" />}
 
       />
@@ -87,42 +91,42 @@ const CustomDrawerContent = ({navigation}) => {
         onPress={() => handleScreenPress('Intractions')}
         style={getScreenItemStyle('Intractions')}
         icon={() => <Icon name="ads-click" size={24} color="black" />}
-
+        labelStyle={getLabelStyle('Intractions')}
       />
       <DrawerItem
         label="Analytics"
         onPress={() => handleScreenPress('Analytics')}
         style={getScreenItemStyle('Analytics')}
         icon={() => <Icon name="analytics" size={24} color="black" />}
-
+        labelStyle={getLabelStyle('Analytics')}
       />
       <DrawerItem
         label="Marketing Tools"
         onPress={() => handleScreenPress('SignUpScreen')}
         style={getScreenItemStyle('SignUpScreen')}
         icon={() => <Icon name="build" size={24} color="black" />}
-
+        labelStyle={getLabelStyle('SignUpScreen')}
       />
       <DrawerItem
         label="Account Settings"
         onPress={() => handleScreenPress('SignUpScreen')}
         style={getScreenItemStyle('SignUpScreen')}
         icon={() => <Icon name="settings" size={24} color="black" />}
-
+        // labelStyle={getLabelStyle('SignUpScreen')}
       />
       <DrawerItem
         label="Reports"
         onPress={() => handleScreenPress('Reports')}
         style={getScreenItemStyle('Reports')}
         icon={() => <Icon name="edit-document" size={24} color="black" />}
-
+        // labelStyle={getLabelStyle('Reports')}
       />
       <DrawerItem
         label="Support"
         onPress={() => handleScreenPress('SignUpScreen')}
         style={getScreenItemStyle('SignUpScreen')}
         icon={() => <Icon name="support" size={24} color="black" />}
-
+        // labelStyle={getLabelStyle('SignUpScreen')}
       />
     </DrawerContentScrollView>
   );
@@ -185,16 +189,16 @@ const App = () => {
           <Stack.Navigator
             initialRouteName="Splash"
             screenOptions={screenOptions}>
-            <Stack.Screen name="Splash" component={SplashScreen} />
+            {/* <Stack.Screen name="Splash" component={SplashScreen} />
             <Stack.Screen name="Selection" component={Selection} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="BusinessSignUp" component={BusinessSignUp} /> 
             <Stack.Screen name="Main" component={SignUpScreen} />  
             <Stack.Screen name="Verification" component={Verification} /> 
             <Stack.Screen name="About" component={About} /> 
-            <Stack.Screen name="AboutBusiness" component={AboutBusiness} /> 
+            <Stack.Screen name="AboutBusiness" component={AboutBusiness} />
+            <Stack.Screen name="AddBusiness" component={AddBusiness} /> */}
             <Stack.Screen name="UpgradePlan" component={UpgradePlan} />  
-            <Stack.Screen name="AddBusiness" component={AddBusiness} />
             <Stack.Screen name="Dashboard" component={DrawerNavigator} />
             <Stack.Screen name="ActivateStore" component={ActivateStore} /> 
             <Stack.Screen name="OtpVerify" component={OtpVerify} />

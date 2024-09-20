@@ -41,8 +41,26 @@ const BusinessSignUp = ({navigation}) => {
   const toggleActive = name => {
     setActive({...active, [name]: !active[name]});
   };
-
+  const validateInputs = () => {
+    // Check if email is empty or not in a valid format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      Alert.alert('Please enter a valid email or password.');
+      return false;
+    }
+    
+    // Check if password is empty or less than 6 characters
+    if (!password || password.length < 6) {
+      Alert.alert('Password must be at least 6 characters long.');
+      return false;
+    }
+    
+    return true;
+  };
   const businessSignUpNow = async () => {
+    if (!validateInputs()) {
+      return; // Do not proceed if validation fails
+    }
     setLoading(true);
     try {
       const payload = {

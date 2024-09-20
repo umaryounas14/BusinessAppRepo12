@@ -10,7 +10,6 @@ const CustomCheckbox = ({ label, isChecked, onChange }) => {
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',

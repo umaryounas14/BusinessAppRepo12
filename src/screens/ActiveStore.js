@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { activateMyStore } from '../redux/slices/activateStoreSlice';
 import { fetchSuggestions } from '../redux/slices/storeSuggestionSlice';
 import DatePickerModal from '../components/DatePickerModal'; // Import the DatePickerModal
-
+import CustomCheckbox from '../components/CustomCheckBox';
 const { width } = Dimensions.get('window');
 const ActivateStore = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -28,6 +28,16 @@ const ActivateStore = ({ navigation, route }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedStoreId, setSelectedStoreId] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
+  const [checkboxError, setCheckboxError] = useState(''); // Error message state
+  const handleCheckboxChange = () => {
+    
+    setIsChecked(!isChecked);
+    if (checkboxError) setCheckboxError(''); // Clear error when checkbox is checked
+  };
+  const [selectedOptions, setSelectedOptions] = useState({
+    'Include User Query': false, // Initially unchecked
+  });
   console.log('selectedStoreId-----------------',selectedStoreId);
   
   const [formData, setFormData] = useState({
@@ -62,7 +72,9 @@ const ActivateStore = ({ navigation, route }) => {
   ];
 
   const businessTypes = [
-    { label: 'dispensaries' },
+    { label: 'Business Type', value: '' }, // Add a default placeholder option
+    { label: 'Dispensaries', value: 'dispensaries' },
+    { label: 'Green', value: 'green' }
   ];
 
   const licenseTypes = [
@@ -97,6 +109,8 @@ const ActivateStore = ({ navigation, route }) => {
       'email',
       'businessName',
       'businessType',
+      'businessAddress1',
+      'businessAddress2',
       'businessCity',
       'businessState',
       'businessPostcode',
@@ -112,6 +126,8 @@ const ActivateStore = ({ navigation, route }) => {
     }
     if (formData.phone && isNaN(Number(formData.phone))) {
       newErrors.phone = 'Phone number must be numeric';
+    } else if (formData.phone && formData.phone.length !== 11) {
+      newErrors.phone = 'Phone number must be exactly 11 characters long';
     }
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email must be a valid email address';
@@ -123,7 +139,10 @@ const ActivateStore = ({ navigation, route }) => {
   };
   const handleSubmit = () => {
     const isValid = validateForm(); // Assumes you have a validation function
-  
+    if (!isChecked) {
+      setCheckboxError('Please check the box if you want to proceed further.');
+      return; // Prevent API call if checkbox is not checked
+    }
     if (!isValid) {
       return;
     }
@@ -377,7 +396,7 @@ const ActivateStore = ({ navigation, route }) => {
                 {/* Suggestions dropdown */}
                 {isSuggestionsVisible && suggestions.length > 0 && (
                   <View style={styles.suggestionsContainer}>
-                    <ScrollView>
+                   <ScrollView style={styles.suggestionsScrollView}>
                       {suggestions.map((item) => (
                         <TouchableOpacity
                           key={item.id}
@@ -388,6 +407,9 @@ const ActivateStore = ({ navigation, route }) => {
                       ))}
                     </ScrollView>
                   </View>
+                )}
+                  {errors.businessType && (
+                  <Text style={styles.errorText}>{errors.businessName}</Text>
                 )}
                   
                 <Input
@@ -405,6 +427,10 @@ const ActivateStore = ({ navigation, route }) => {
                     {borderRadius: 15, borderColor: '#ddd'},
                   ]}
                 />
+                  {errors.businessType && (
+                  <Text style={styles.errorText}>{errors.businessAddress1}</Text>
+                )}
+                
                 <Input
                   color="black"
                   placeholder="Address Line 2"
@@ -420,6 +446,9 @@ const ActivateStore = ({ navigation, route }) => {
                     {borderRadius: 15, borderColor: '#ddd'},
                   ]}
                 />
+                 {errors.businessType && (
+                  <Text style={styles.errorText}>{errors.businessAddress2}</Text>
+                )}
                 <Input
                   color="black"
                   placeholder="City*"
@@ -564,7 +593,7 @@ const ActivateStore = ({ navigation, route }) => {
                     {errors.businessLicenseExpiration}
                   </Text>
                 )}
-                <Text
+                {/* <Text
                   center
                   color={theme.COLORS.WHITE}
                   size={theme.SIZES.FONT * 0.75}
@@ -577,7 +606,30 @@ const ActivateStore = ({ navigation, route }) => {
                   By completing this form, you consent to Mary J. Finder
                   processing your information in accordance with our Privacy
                   Policy.
+                </Text> */}
+               <View style={styles.row}>
+                <TouchableOpacity
+                  style={[
+                    styles.checkbox,
+                    isChecked ? styles.checked : null, // Apply checked style conditionally
+                  ]}
+                  onPress={handleCheckboxChange} // Handle checkbox toggle
+                />
+                <Text
+                  style={{
+                    color: '#949494',
+                    textAlign: 'center',
+                    paddingHorizontal: 30,
+                    marginTop: 10,
+                  }}>
+                  By completing this form, you consent to Mary J. Finder
+                  processing your information in accordance with our Privacy Policy.
                 </Text>
+              </View>
+               {/* Error message below the text */}
+               {checkboxError ? (
+                 <Text style={styles.errorText}>{checkboxError}</Text>
+                ) : null}
                 <Block center flex style={{marginTop: 20}}>
                   <Button
                     size="medium"
@@ -643,8 +695,8 @@ const styles = StyleSheet.create({
   },
   suggestionsContainer: {
     maxHeight: 120,
+    maxWidth:330,
     borderColor: '#ddd',
-  
     borderWidth: 1,
     borderRadius: 15,
     marginTop: 2,
@@ -668,6 +720,30 @@ const styles = StyleSheet.create({
   },
   suggestionText: {
     fontSize: 16,
+  },
+  suggestionsScrollView: {
+    maxHeight: 150, // Limit the height of the scrollable suggestions list
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'center',
+    margin: 3,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#B4B4B4',
+    backgroundColor: 'transparent',
+    marginRight: -12,
+    marginLeft:25,
+    marginBottom:27
+  },
+  checked: {
+    backgroundColor: '#099D63',
+    borderColor: '#099D63',
   },
 });
 

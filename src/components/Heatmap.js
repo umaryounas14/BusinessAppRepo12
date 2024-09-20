@@ -49,9 +49,10 @@ const Heatmap = () => {
             x={cellWidth / 2}
             y={cellHeight / 2}
             fontSize="12"
-            fill="black"
+            fill="white"
             textAnchor="middle"
             alignmentBaseline="middle"
+            style={styles.storeClickStyle}
           >
             {item.storeClicks}
           </Text>
@@ -65,14 +66,16 @@ const Heatmap = () => {
             width={cellWidth}
             height={cellHeight}
             fill={getColor(item.mapClicks)}
+            
           />
           <Text
             x={cellWidth / 2}
             y={cellHeight / 2}
             fontSize="12"
-            fill="black"
+            fill="white"
             textAnchor="middle"
             alignmentBaseline="middle"
+            style={styles.storeClickStyle}
           >
             {item.mapClicks}
           </Text>
@@ -91,9 +94,10 @@ const Heatmap = () => {
             x={cellWidth / 2}
             y={cellHeight / 2}
             fontSize="14"
-            fill="black"
+            fill="white"
             textAnchor="middle"
             alignmentBaseline="middle"
+            style={styles.storeClickStyle}
           >
             {item.productClicks}
           </Text>
@@ -150,6 +154,12 @@ const styles = StyleSheet.create({
   cellContainer: {
     width: (Dimensions.get('window').width - 40) / 4, // Adjusted for padding
   },
+  storeClickStyle:{
+    color:'white',
+    textAlign:'left',
+    paddingHorizontal:10,
+    paddingVertical:5
+  }
 });
 
 export default Heatmap;

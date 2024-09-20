@@ -180,49 +180,49 @@ const UpgradePlan = ({navigation}) => {
           <View style={styles.container}>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textStyle}>
                 Top-Tier Listing: Highest visibility in search results and on
                 the main page.
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textStyle}>
                 Unlimited Product Listings: No cap on the number of products
                 listed.
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textStyle}>
                 Featured Product Promotions: Products are periodically featured
                 as recommendations in the chatbot interactions.
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textStyle}>
                 Direct Marketing Tools: Ability to send targeted promotions
                 directly to users based on their search history and preferences.
               </Text>
             </View>
-            <View style={styles.item}>
+            <View style={[styles.item]}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textStyle}>
                 Advanced Analytics: Comprehensive analytics dashboard with
                 real-time data, trends analysis, and user engagement metrics.{' '}
               </Text>
             </View>
-            <View style={styles.item}>
+            {/* <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
               <Text>
                 Priority Support: Dedicated account manager and 24/7 technical
                 support.{' '}
               </Text>
-            </View>
+            </View> */}
           </View>
         </View>
-        <Block center flex style={{marginTop: 20}}>
+        <Block center flex style={{marginTop: 60,marginBottom:30}}>
           <Button
             size="medium"
             shadowless
@@ -280,6 +280,9 @@ const styles = StyleSheet.create({
     marginRight: 5,
     alignSelf: 'baseline',
   },
+  textStyle:{
+    color:'gray'
+  }
 });
 
 export default UpgradePlan;

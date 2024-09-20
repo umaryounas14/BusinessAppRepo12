@@ -73,21 +73,16 @@ const Login = ({navigation}) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        
         body: JSON.stringify(payload),
-
       });
       console.log('response......',response)
 
       if (!response.ok) {
         throw new Error('Failed to refresh token');
       }
-
       const data = await response.json();
-
       // Update AsyncStorage with new access token
       await AsyncStorage.setItem('accessToken', data.access_token);
-
       return data.access_token;
     } catch (error) {
       console.error('Error refreshing token:', error);
@@ -164,7 +159,6 @@ const Login = ({navigation}) => {
   };
   const loginNow = async () => {
     setLoading(true);
-
     const payload = {
       grant_type: 'password',
       client_id: client_id,
@@ -178,7 +172,7 @@ const Login = ({navigation}) => {
       if (response?.payload?.body?.access_token) {
         const {access_token, refresh_token, expires_in, user} =
           response.payload.body;
-        await storeTokensAndUserData(
+          await storeTokensAndUserData(
           access_token,
           refresh_token,
           expires_in,

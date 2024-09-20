@@ -16,7 +16,7 @@ import LineChartComponent from '../components/LineChart';
 import Heatmap from '../components/Heatmap';
 import TableView from '../components/TableView';
 import PredictiveAnalysisGraph from '../components/PredictiveAnalysisGraph';
-
+import DatePickerModal from '../components/DatePickerModal';
 const data = [
   {month: 'Jan', impressions: 10, ctr: 10},
   {month: 'Feb', impressions: 20, ctr: 20},
@@ -64,6 +64,19 @@ const predictiveData = [
 ];
 
 const Analytics = ({navigation}) => {
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null); // For Start Date
+  const [endDate, setEndDate] = useState(null); // For End Date
+  const [currentDatePicker, setCurrentDatePicker] = useState(null);
+  const handleDateConfirm = date => {
+    if (currentDatePicker === 'start') {
+      setSelectedDate(date); // Update the selected start date
+    } else if (currentDatePicker === 'end') {
+      setEndDate(date); // Update the selected end date
+    }
+    setDatePickerVisible(false);
+    setCurrentDatePicker(null); // Reset the current date picker
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -124,24 +137,70 @@ const Analytics = ({navigation}) => {
               </Text>
               <Icon name="arrow-down" size={13} color="black" />
             </View>
-            <View style={[styles.dateContainer, styles.startDateContainer]}>
+            <TouchableOpacity
+              onPress={() => {
+                setCurrentDatePicker('start');
+                setDatePickerVisible(true);
+              }}
+              style={styles.dateContainer}
+            >
               <Icon
                 name="calendar"
                 size={20}
                 color="#B4B4B4"
                 style={styles.dateIcon}
               />
-              <Text style={styles.datePickerText}>Start Date</Text>
-            </View>
-            <View style={[styles.dateContainer, styles.endDateContainer]}>
-              <Icon
-                name="calendar"
-                size={20}
-                color="#B4B4B4"
-                style={styles.dateIcon}
+              <Text
+                style={[
+                  styles.dateText,
+                  { color: selectedDate ? 'black' : 'lightgray' },
+                ]}
+              >
+                {selectedDate ? selectedDate.toDateString() : 'Start Date'}
+              </Text>
+            </TouchableOpacity>
+
+            <DatePickerModal
+              visible={isDatePickerVisible && currentDatePicker === 'start'}
+              onConfirm={handleDateConfirm}
+              onCancel={() => setDatePickerVisible(false)}
+              date={selectedDate || new Date()} // Default to current date if not selected
+              mode="date"
+            />
+
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  setCurrentDatePicker('end');
+                  setDatePickerVisible(true);
+                }}
+                style={styles.dateContainer}
+              >
+                <Icon
+                  name="calendar"
+                  size={20}
+                  color="#B4B4B4"
+                  style={styles.dateIcon}
+                />
+                <Text
+                  style={[
+                    styles.dateText,
+                    { color: endDate ? 'black' : 'lightgray' },
+                  ]}
+                >
+                  {endDate ? endDate.toDateString() : 'End Date'}
+                </Text>
+              </TouchableOpacity>
+
+              <DatePickerModal
+                visible={isDatePickerVisible && currentDatePicker === 'end'}
+                onConfirm={handleDateConfirm}
+                onCancel={() => setDatePickerVisible(false)}
+                date={endDate || new Date()} // Default to current date if not selected
+                mode="date"
               />
-              <Text style={styles.datePickerText}>End Date</Text>
             </View>
+          
             <View>
               <Text
                 style={{
@@ -271,15 +330,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  dateContainer: {
-    backgroundColor: 'transparent',
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
-    borderRadius: 20,
-    marginTop: -20,
-  },
+  // dateContainer: {
+  //   backgroundColor: 'transparent',
+  //   paddingHorizontal: 10,
+  //   paddingVertical: 15,
+  //   borderWidth: 1,
+  //   borderColor: '#B4B4B4',
+  //   borderRadius: 20,
+  //   marginTop: -20,
+  // },
   startDateContainer: {
     backgroundColor: 'transparent',
     paddingHorizontal: 10,
@@ -324,6 +383,26 @@ const styles = StyleSheet.create({
     borderColor: '#B4B4B4',
     borderRadius: 20,
     marginTop: 1,
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    marginTop: 20,
+    borderWidth:1,
+    borderColor:'#ddd',
+    borderRadius:20,
+    paddingVertical:12
+  },
+  dateIcon: {
+    marginRight: 10,
+  },
+  dateText: {
+    fontSize: 15,
+    color: 'black',
+    fontWeight:'400'
   },
 });
 

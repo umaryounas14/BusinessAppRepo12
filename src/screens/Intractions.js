@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Image,
+  Image,TextInput
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Block, Button, Input, theme} from 'galio-framework';
@@ -17,8 +17,23 @@ import TableView from '../components/TableView';
 import PredictiveAnalysisGraph from '../components/PredictiveAnalysisGraph';
 import MultiLineChart from '../components/MultiLineChart';
 import {materialTheme} from '../constants';
-
+import DatePickerModal from '../components/DatePickerModal'; 
 const Intractions = ({navigation}) => {
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null); // For Start Date
+  const [endDate, setEndDate] = useState(null); // For End Date
+  const [currentDatePicker, setCurrentDatePicker] = useState(null);
+  const [searchInput, setSearchInput] = useState('');
+
+  const handleDateConfirm = date => {
+    if (currentDatePicker === 'start') {
+      setSelectedDate(date); // Update the selected start date
+    } else if (currentDatePicker === 'end') {
+      setEndDate(date); // Update the selected end date
+    }
+    setDatePickerVisible(false);
+    setCurrentDatePicker(null); // Reset the current date picker
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -79,45 +94,85 @@ const Intractions = ({navigation}) => {
               </Text>
               <Icon name="arrow-down" size={13} color="black" />
             </View>
-            <View style={[styles.dateContainer, styles.startDateContainer]}>
+        
+            <TouchableOpacity
+              onPress={() => {
+                setCurrentDatePicker('start');
+                setDatePickerVisible(true);
+              }}
+              style={styles.dateContainer}
+            >
               <Icon
                 name="calendar"
                 size={20}
                 color="#B4B4B4"
                 style={styles.dateIcon}
               />
-              <Text style={styles.datePickerText}>Start Date</Text>
-            </View>
-            <View style={[styles.dateContainer, styles.endDateContainer]}>
-              <Icon
-                name="calendar"
-                size={20}
-                color="#B4B4B4"
-                style={styles.dateIcon}
-              />
-              <Text style={styles.datePickerText}>End Date</Text>
-            </View>
-            
-           
-            <View style={{marginTop:-5}}>
-         <Icon
-            name="search"
-    size={20}
-    color="#B4B4B4"
-            style={styles.searchIcon}
-           />
-        <Input
-        // color="black"
-        placeholder="Search"
-    // type="first-name"
-    // autoCapitalize="none"
-    // bgColor="transparent"
-    placeholderTextColor="#B4B4B4"
-    // {materialTheme.COLORS.PLACEHOLDER}
-        style={styles.textInput}
-        />
-</View>
+              <Text
+                style={[
+                  styles.dateText,
+                  { color: selectedDate ? 'black' : 'lightgray' },
+                ]}
+              >
+                {selectedDate ? selectedDate.toDateString() : 'Start Date'}
+              </Text>
+            </TouchableOpacity>
 
+            <DatePickerModal
+              visible={isDatePickerVisible && currentDatePicker === 'start'}
+              onConfirm={handleDateConfirm}
+              onCancel={() => setDatePickerVisible(false)}
+              date={selectedDate || new Date()} // Default to current date if not selected
+              mode="date"
+            />
+
+            <View style={{ marginTop: -5 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setCurrentDatePicker('end');
+                  setDatePickerVisible(true);
+                }}
+                style={styles.dateContainer}
+              >
+                <Icon
+                  name="calendar"
+                  size={20}
+                  color="#B4B4B4"
+                  style={styles.dateIcon}
+                />
+                <Text
+                  style={[
+                    styles.dateText,
+                    { color: endDate ? 'black' : 'lightgray' },
+                  ]}
+                >
+                  {endDate ? endDate.toDateString() : 'End Date'}
+                </Text>
+              </TouchableOpacity>
+
+              <DatePickerModal
+                visible={isDatePickerVisible && currentDatePicker === 'end'}
+                onConfirm={handleDateConfirm}
+                onCancel={() => setDatePickerVisible(false)}
+                date={endDate || new Date()} // Default to current date if not selected
+                mode="date"
+              />
+            </View>
+            <View style={styles.searchContainer}>
+              <TextInput
+                value={searchInput}
+                onChangeText={setSearchInput}
+                style={styles.searchInput}
+                placeholder="Search..."
+                placeholderTextColor={"lightgray"}
+              />
+              <Icon
+                name="search"
+                size={20}
+                color="#B4B4B4"
+                style={styles.searchIcon}
+              />
+            </View>
             
           </KeyboardAvoidingView>
         </Block>
@@ -180,16 +235,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   dateContainer: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     paddingHorizontal: 10,
     paddingVertical: 15,
     borderWidth: 1,
-    borderColor: '#B4B4B4',
+    borderColor: '#ddd',
     borderRadius: 20,
     marginTop: -20,
   },
   startDateContainer: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     paddingHorizontal: 10,
     borderWidth: 1,
     marginBottom: 30,
@@ -224,29 +279,56 @@ const styles = StyleSheet.create({
     top: '50%',
     marginTop: 5,
   }, 
-  input: {
-    paddingVertical: 15, // Same as dateContainer
-    paddingHorizontal: 10, // Same as dateContainer
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
-    borderRadius: 20, // Same as dateContainer
-    marginTop: -20, // Same as startDateContainer
-    marginBottom: 30,
-    backgroundColor: 'transparent',
-  },
-  searchIcon:{
-    position:'absolute',
-    left:10,
-    marginTop:17,
-  },
   textInput: {
-    // flex: 1,
-    // marginLeft: 10,
     paddingVertical:2,
     paddingHorizontal:28,
     color: 'black',
     backgroundColor: 'transparent',
-    // height: '100%',
+    paddingHorizontal:10
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    marginTop: 20,
+    borderWidth:1,
+    borderColor:'#ddd',
+    borderRadius:20
+  },
+  dateIcon: {
+    marginRight: 10,
+  },
+  dateText: {
+    fontSize: 15,
+    color: 'black',
+    fontWeight:'400'
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    paddingHorizontal: 28,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: 'transparent',
+    borderRadius: 20,
+    color: 'black',
+    fontWeight:"400"
+  },
+  searchIcon: {
+    marginLeft: 7,
+    position:'absolute',
+    marginTop:17,
+    paddingHorizontal:3
   },
  
 });

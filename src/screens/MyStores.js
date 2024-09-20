@@ -28,27 +28,19 @@ const MyStores = ({navigation}) => {
   useEffect(() => {
     dispatch(getStores({page: 1, limit: 10}));
   }, [dispatch]);
-
   const {data: stores, status, error} = useSelector(state => state.stores);
-  console.log('stores,------------------------------------MyStore',stores)
+  console.log('stores,------------------------------------MyStore',stores);
   const formattedStoreData = [
-    ['Name', 'Email', 'Address', 'Type', 'Status', 'Action','Request'],
+    ['Name', 'Email', 'Address', 'Type', 'Status', 'Action', 'Request'],
     ...stores.map(store => [
       store.title || 'N/A',
       'N/A', // Email is not provided in the API response
-      store.address || 'N/A',
-      store.type || 'N/A',
+      `${store.business_address1 || 'N/A'}, ${store.business_address2 || ''}`,
+      store.business_type || 'N/A',
       store.status_label || 'N/A',
-      store.status === 'draft' ,
+      store.status === 'draft',
       store.status_label,
-      (
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() =>handleDeleteStore(store.id)}>
-          <Text style={styles.editButtonText}>Delete</Text>
-        </TouchableOpacity>
-      ),
-    
+    ]),
       // store.status === 'draft' ? 'Activate' : 'Delete',
       // ? <Text style={styles.activateText}>Activate</Text>
       // : (
@@ -56,50 +48,50 @@ const MyStores = ({navigation}) => {
       //       <Text style={styles.deleteText}>Delete</Text>
       //     </TouchableOpacity>
       //   ),
-  ]),
+  
       // store.status === 'draft' ? 'Activate' : 'Delete',
     
   ];
 
-  const handleDeleteStore = async (storeId) => {
-    dispatch(deleteStore({ id: storeId }))
-    .unwrap()
-    .then((response) => {
-      console.log('Store activated successfully:', response);
-    if (navigation && typeof navigation.goBack === 'function') {
-      navigation.goBack({store_id: selectedStoreId}); // Navigate back after successful activation
-    } else {
-      console.error('Navigation object is undefined or invalid');
-    }
-  })
-    .catch((err) => {
-      console.error('Activation failed:', err);
-    });
-    // setLoading(true); // You can show a loader in your UI
-    // const payload = {
-    //   id:storeId
-    // };
-    // const accessToken = await AsyncStorage.getItem('accessToken');
-    // console.log('payload---------------',payload)
-    // // try {
-    //   const response = await dispatch(deleteStore(payload)); 
-    //   // Dispatch the delete action
-    //   console.log('response--------------handleMyStore',response)
+  // const handleDeleteStore = async (storeId) => {
+  //   dispatch(deleteStore({ id: storeId }))
+  //   .unwrap()
+  //   .then((response) => {
+  //     console.log('Store activated successfully:', response);
+  //   if (navigation && typeof navigation.goBack === 'function') {
+  //     navigation.goBack({store_id: selectedStoreId}); // Navigate back after successful activation
+  //   } else {
+  //     console.error('Navigation object is undefined or invalid');
+  //   }
+  // })
+  //   .catch((err) => {
+  //     console.error('Activation failed:', err);
+  //   });
+  //   // setLoading(true); // You can show a loader in your UI
+  //   // const payload = {
+  //   //   id:storeId
+  //   // };
+  //   // const accessToken = await AsyncStorage.getItem('accessToken');
+  //   // console.log('payload---------------',payload)
+  //   // // try {
+  //   //   const response = await dispatch(deleteStore(payload)); 
+  //   //   // Dispatch the delete action
+  //   //   console.log('response--------------handleMyStore',response)
 
-    //   if (response?.meta?.requestStatus === 'fulfilled') {
-    //     Alert.alert('Store deleted successfully');
-    //     // Optionally update the UI or navigate if necessary
-    //   } else {
-    //     Alert.alert('Failed to delete store', response.error?.message || 'Unknown error');
-    //   }
-    // } catch (error) {
-    //   console.error('Error deleting store:', error);
-    //   Alert.alert('Error deleting store', 'Please try again later.');
-    // } finally {
-    //   setLoading(false); // Hide the loader
-    // }
+  //   //   if (response?.meta?.requestStatus === 'fulfilled') {
+  //   //     Alert.alert('Store deleted successfully');
+  //   //     // Optionally update the UI or navigate if necessary
+  //   //   } else {
+  //   //     Alert.alert('Failed to delete store', response.error?.message || 'Unknown error');
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.error('Error deleting store:', error);
+  //   //   Alert.alert('Error deleting store', 'Please try again later.');
+  //   // } finally {
+  //   //   setLoading(false); // Hide the loader
+  //   // }
     
-  };
+  // };
   
 //   const handleDelete = async (storeId)=>{
 //     const accessToken = await AsyncStorage.getItem('accessToken');
@@ -190,7 +182,6 @@ const MyStores = ({navigation}) => {
   const openDrawer = () => {
     navigation.openDrawer();
   };
-
   return (
     <DrawerSceneWrapper>
       <View style={styles.container}>
