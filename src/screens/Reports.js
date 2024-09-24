@@ -15,7 +15,7 @@ import CustomCheckbox from '../components/CustomCheckBox'; // Import the CustomC
 import New from 'react-native-vector-icons/Feather';
 import DrawerSceneWrapper from '../components/drawerSceneWrapper';
 import DropdownInput from '../components/DropDown';
-
+import Entypo from 'react-native-vector-icons/Entypo';
 const {width, height} = Dimensions.get('window');
 
 const Reports = ({navigation}) => {
@@ -98,9 +98,9 @@ const Reports = ({navigation}) => {
           <View style={styles.announcementBanner}>
             <Text style={styles.announcementText}>Activate Your Store!</Text>
           </View>
-          {/* <TouchableOpacity onPress={openDrawer}>
-          <New name="menu" size={30} style={{marginLeft: 10, marginTop: 20}} />
-        </TouchableOpacity> */}
+          <TouchableOpacity onPress={openDrawer}>
+     <Entypo name="menu" size={35} style={{color:'black',marginLeft: 10, marginTop: 10}} />
+ </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.iconContainer1,
@@ -322,7 +322,9 @@ const Reports = ({navigation}) => {
           <View style={[styles.filter]}>
             <Text style={{marginLeft: 5, color: '#B4B4B4'}}>Products</Text>
           </View> */}
+
           <View style= {{marginLeft: 30, marginBottom: 10}}>
+          <Text style={styles.metricsHeader}>Include User Query</Text>
           <CustomCheckbox
             key={'Include User Query'}
             label={'Include User Query'}
@@ -330,11 +332,9 @@ const Reports = ({navigation}) => {
             onChange={() => handleCheckboxChange('Include User Query')} 
           />
           </View>
-          {/* <View style={[styles.filter]}>
-            <Text style={{marginLeft: 5, color: '#B4B4B4'}}>Region</Text>
-          </View> */}
+       
              <Button
-            style={styles.logoutButton}>
+            style={styles.generateButton}>
             {/* // onPress={handleLogout}> */}
             Generate Report
           </Button>
@@ -387,18 +387,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  dateContainer: {
-    backgroundColor: 'transparent',
-    paddingHorizontal: 10,
-    paddingVertical: 0,
-    borderWidth: 1,
-    borderColor: '#B4B4B4',
-    borderRadius: 20,
-    marginTop: -20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+
   startDateContainer: {
     backgroundColor: 'transparent',
     paddingHorizontal: 10,
@@ -472,12 +461,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     backgroundColor: 'white',
-
-    marginTop: 20,
+    margin:3,
+    marginTop: 10,
     borderWidth:1,
     borderColor:'#ddd',
     borderRadius:20,
-    paddingVertical:14
+    paddingVertical:10
     
   },
   dateIcon: {
@@ -491,13 +480,15 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 18,
+    marginTop: 10,
     backgroundColor: 'white',
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#ddd',
-    paddingHorizontal: 3,
-    paddingVertical:2
+    paddingHorizontal: 5,
+    height:47,
+    
+
   },
   searchInput: {
     flex: 1,
@@ -514,7 +505,7 @@ const styles = StyleSheet.create({
     marginTop:17,
     paddingHorizontal:3
   },
-  logoutButton: {
+  generateButton: {
     backgroundColor: '#099D63',
 
     width: '80%',

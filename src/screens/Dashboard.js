@@ -16,9 +16,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import MultiLineChart from '../components/MultiLineChart';
 import { useDispatch, useSelector} from 'react-redux';
 import { getStores } from '../redux/slices/getStoresSlice';
-
+import Entypo from 'react-native-vector-icons/Entypo';
 const { width } = Dimensions.get('window');
-
 const Dashboard = ({ navigation,route }) => {
 const store_id=route.params;
   const dispatch = useDispatch();
@@ -38,11 +37,9 @@ const store_id=route.params;
       console.error('Error logging out:', error);
     }
   };
-
   const openDrawer = () => {
     navigation.openDrawer();
   };
-
   const data = [
     { month: 'Jan', impressions: 50, ctr: 10 },
     { month: 'Feb', impressions: 10, ctr: 20 },
@@ -57,7 +54,6 @@ const store_id=route.params;
     { month: 'Nov', impressions: -53, ctr: 30 },
     { month: 'Dec', impressions: 24, ctr: 60 },
   ];
-
   const words = [
     ['Search Subject', 'Product Category', 'Impressions', 'Map Clicks', 'Cart Clicks', 'Avg CTR', 'Inquiries'],
     ['sleepy edibles', 'Edibles', '5643', '332', '2321', '212', 'Looking for some sleepy..'],
@@ -65,14 +61,12 @@ const store_id=route.params;
     ['phat panda', 'Brand', '4343', '454', '454', '454', 'What’s the best brand...'],
     ['4 pack pre-rolls', 'Pre-rolls', '3943', '3445', '453', '454', 'Which store has....'],
   ];
-
   const performanceData = [
     ['Product', 'Impressions', 'Sales', 'Clicks', 'Conversion Rate'],
     ['sleepy edibles', '1200', '1200', '300', '25%'],
     ['blueberry pre-rolls', '200', '900', '500', '55%'],
     ['phat panda', '590', '800', '450', '56%'],
   ];
-
   const topQuries = [
     ['Query', 'Frequency', 'Avg.CTR', 'Conversion Rate'],
     ['Edibles that help sleep', '30', '10%', '4%'],
@@ -80,7 +74,6 @@ const store_id=route.params;
     ['phat panda', '50', '15%', '5%'],
     ['CBD oil for anxity', '50', '8%', '5%'],
   ];
-
   return (
     <DrawerSceneWrapper>
     <View style={styles.container}>
@@ -89,7 +82,7 @@ const store_id=route.params;
           <Text style={styles.announcementText}>Activate Your Store!</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={openDrawer}>
-          <Icon name="menu" size={30} style={{marginLeft: 10, marginTop: 10}} />
+          <Entypo name="menu" size={35} style={{color:'black',marginLeft: 10, marginTop: 10}} />
         </TouchableOpacity>
         <Block flex middle style={styles.userInfoContainer}>
           <Text style={styles.userInfoText}>Hello, John Smith</Text>

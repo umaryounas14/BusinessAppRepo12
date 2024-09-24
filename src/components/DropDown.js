@@ -16,14 +16,20 @@ const defaultData = [
   { label: 'Item 8', value: '8' },
 ];
 
-const DropdownInput = ({ data = defaultData, placeholder = "Select an item", onSelect }) => {
-  const [value, setValue] = useState(null);
-
+const DropdownInput = ({ data = defaultData, placeholder = "Select an item", onSelect,selectedItem }) => {
+  // const [value, setValue] = useState(null);
+  const [value, setValue] = useState(selectedItem);
   // Handle selection change
+  // const handleChange = (item) => {
+  //   setValue(item.value);
+  //   if (onSelect) {
+  //     onSelect(item);
+  //   }
+  // };
   const handleChange = (item) => {
-    setValue(item.value);
+    setValue(item.value);  // Set the local state to show the selected value in the dropdown
     if (onSelect) {
-      onSelect(item);
+      onSelect(item);  // Pass selected item back to parent component
     }
   };
 
@@ -33,6 +39,7 @@ const DropdownInput = ({ data = defaultData, placeholder = "Select an item", onS
       placeholderStyle={styles.placeholderStyle}
       selectedTextStyle={styles.selectedTextStyle}
       inputSearchStyle={styles.inputSearchStyle}
+      itemTextStyle={styles.itemTextStyle} // Style the items in the list
       iconStyle={styles.iconStyle}
       data={data}
       search
@@ -41,7 +48,7 @@ const DropdownInput = ({ data = defaultData, placeholder = "Select an item", onS
       valueField="value"
       placeholder={placeholder}
       searchPlaceholder="Search..."
-      value={value}
+      value={value || selectedItem}
       onChange={handleChange}
     />
   );
@@ -65,11 +72,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'red',
+   
+  
   },
   placeholderStyle: {
     fontSize: 15,
-    color: '#949494',
+    color: 'gray',
   },
   selectedTextStyle: {
     fontSize: 15,
@@ -83,5 +91,9 @@ const styles = StyleSheet.create({
   iconStyle: {
     width: 20,
     height: 20,
+  },
+  itemTextStyle: {
+    color: 'black', // Text color for items in the dropdown
+    fontSize: 15,
   },
 });

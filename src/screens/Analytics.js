@@ -17,6 +17,7 @@ import Heatmap from '../components/Heatmap';
 import TableView from '../components/TableView';
 import PredictiveAnalysisGraph from '../components/PredictiveAnalysisGraph';
 import DatePickerModal from '../components/DatePickerModal';
+import Entypo from 'react-native-vector-icons/Entypo';
 const data = [
   {month: 'Jan', impressions: 10, ctr: 10},
   {month: 'Feb', impressions: 20, ctr: 20},
@@ -77,12 +78,18 @@ const Analytics = ({navigation}) => {
     setDatePickerVisible(false);
     setCurrentDatePicker(null); // Reset the current date picker
   };
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.announcementBanner}>
           <Text style={styles.announcementText}>Activate Your Store!</Text>
         </View>
+        <TouchableOpacity onPress={openDrawer}>
+          <Entypo name="menu" size={35} style={{color:'black',marginLeft: 10, marginTop: 10}} />
+        </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.iconContainer1,
@@ -118,21 +125,9 @@ const Analytics = ({navigation}) => {
         <Block flex middle>
           <KeyboardAvoidingView behavior="padding" enabled>
             <View
-              style={{
-                paddingVertical: 50,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                marginRight: 180,
-              }}>
+              style={styles.allstoreView}>
               <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: 'bold',
-                  color: 'black',
-                  textDecorationLine: 'underline',
-                  marginRight: 7,
-                }}>
+                style={styles.allStoreStyle}>
                 All Stores
               </Text>
               <Icon name="arrow-down" size={13} color="black" />
@@ -142,8 +137,7 @@ const Analytics = ({navigation}) => {
                 setCurrentDatePicker('start');
                 setDatePickerVisible(true);
               }}
-              style={styles.dateContainer}
-            >
+              style={styles.dateContainer}>
               <Icon
                 name="calendar"
                 size={20}
@@ -154,8 +148,7 @@ const Analytics = ({navigation}) => {
                 style={[
                   styles.dateText,
                   { color: selectedDate ? 'black' : 'lightgray' },
-                ]}
-              >
+                ]}>
                 {selectedDate ? selectedDate.toDateString() : 'Start Date'}
               </Text>
             </TouchableOpacity>
@@ -292,6 +285,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.COLORS.WHITE,
   },
+  allstoreView:{
+    paddingVertical: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginRight: 180,
+  },
+  allStoreStyle:{
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'black',
+    textDecorationLine: 'underline',
+    marginRight: 7,
+  },
   announcementBanner: {
     backgroundColor: '#099D63',
     paddingVertical: 5,
@@ -330,15 +337,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  // dateContainer: {
-  //   backgroundColor: 'transparent',
-  //   paddingHorizontal: 10,
-  //   paddingVertical: 15,
-  //   borderWidth: 1,
-  //   borderColor: '#B4B4B4',
-  //   borderRadius: 20,
-  //   marginTop: -20,
-  // },
+
   startDateContainer: {
     backgroundColor: 'transparent',
     paddingHorizontal: 10,
@@ -390,7 +389,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'white',
     borderRadius: 5,
-    marginTop: 20,
+    marginTop: 10,
     borderWidth:1,
     borderColor:'#ddd',
     borderRadius:20,

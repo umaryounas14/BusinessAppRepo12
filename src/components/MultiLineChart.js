@@ -160,7 +160,8 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   legendText: {
-    fontSize: 10
+    fontSize: 10,
+    color:'black'
   }
 });
 

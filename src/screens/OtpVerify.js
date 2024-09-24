@@ -46,8 +46,6 @@ const OtpVerify = ({route, navigation}) => {
           index: 0,
           routes: [{ name: 'AboutBusiness' }],
         });      }
-
-
       setLoading(false);
     } catch (error) {
       console.error('Signup error:', error);
@@ -69,6 +67,8 @@ const OtpVerify = ({route, navigation}) => {
             style={styles.input}
             keyboardType="numeric"
             maxLength={1}
+         
+            placeholderTextColor="black"
             onChangeText={text => {
               // Auto focus to next input field
               if (text && index < 5) {
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     marginTop: -50,
+    color:"black"
   },
   inputContainer: {
     flexDirection: 'row',

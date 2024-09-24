@@ -119,7 +119,7 @@ const CustomDrawerContent = ({navigation}) => {
         onPress={() => handleScreenPress('Reports')}
         style={getScreenItemStyle('Reports')}
         icon={() => <Icon name="edit-document" size={24} color="black" />}
-        // labelStyle={getLabelStyle('Reports')}
+        labelStyle={getLabelStyle('Reports')}
       />
       <DrawerItem
         label="Support"
@@ -189,15 +189,15 @@ const App = () => {
           <Stack.Navigator
             initialRouteName="Splash"
             screenOptions={screenOptions}>
-            {/* <Stack.Screen name="Splash" component={SplashScreen} />
-            <Stack.Screen name="Selection" component={Selection} />
+            <Stack.Screen name="Splash" component={SplashScreen} /> 
+             <Stack.Screen name="Selection" component={Selection} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="BusinessSignUp" component={BusinessSignUp} /> 
             <Stack.Screen name="Main" component={SignUpScreen} />  
-            <Stack.Screen name="Verification" component={Verification} /> 
+            <Stack.Screen name="Verification" component={Verification} />  
             <Stack.Screen name="About" component={About} /> 
-            <Stack.Screen name="AboutBusiness" component={AboutBusiness} />
-            <Stack.Screen name="AddBusiness" component={AddBusiness} /> */}
+            <Stack.Screen name="AboutBusiness" component={AboutBusiness} /> 
+            <Stack.Screen name="AddBusiness" component={AddBusiness} /> 
             <Stack.Screen name="UpgradePlan" component={UpgradePlan} />  
             <Stack.Screen name="Dashboard" component={DrawerNavigator} />
             <Stack.Screen name="ActivateStore" component={ActivateStore} /> 

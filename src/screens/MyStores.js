@@ -10,6 +10,7 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {Block, Button, Input, theme} from 'galio-framework';
 import {useDispatch, useSelector} from 'react-redux';
 const {width, height} = Dimensions.get('window');
@@ -52,75 +53,11 @@ const MyStores = ({navigation}) => {
       // store.status === 'draft' ? 'Activate' : 'Delete',
     
   ];
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
 
-  // const handleDeleteStore = async (storeId) => {
-  //   dispatch(deleteStore({ id: storeId }))
-  //   .unwrap()
-  //   .then((response) => {
-  //     console.log('Store activated successfully:', response);
-  //   if (navigation && typeof navigation.goBack === 'function') {
-  //     navigation.goBack({store_id: selectedStoreId}); // Navigate back after successful activation
-  //   } else {
-  //     console.error('Navigation object is undefined or invalid');
-  //   }
-  // })
-  //   .catch((err) => {
-  //     console.error('Activation failed:', err);
-  //   });
-  //   // setLoading(true); // You can show a loader in your UI
-  //   // const payload = {
-  //   //   id:storeId
-  //   // };
-  //   // const accessToken = await AsyncStorage.getItem('accessToken');
-  //   // console.log('payload---------------',payload)
-  //   // // try {
-  //   //   const response = await dispatch(deleteStore(payload)); 
-  //   //   // Dispatch the delete action
-  //   //   console.log('response--------------handleMyStore',response)
-
-  //   //   if (response?.meta?.requestStatus === 'fulfilled') {
-  //   //     Alert.alert('Store deleted successfully');
-  //   //     // Optionally update the UI or navigate if necessary
-  //   //   } else {
-  //   //     Alert.alert('Failed to delete store', response.error?.message || 'Unknown error');
-  //   //   }
-  //   // } catch (error) {
-  //   //   console.error('Error deleting store:', error);
-  //   //   Alert.alert('Error deleting store', 'Please try again later.');
-  //   // } finally {
-  //   //   setLoading(false); // Hide the loader
-  //   // }
-    
-  // };
   
-//   const handleDelete = async (storeId)=>{
-//     const accessToken = await AsyncStorage.getItem('accessToken');
-//     if (!accessToken) {
-//       console.error('No access token found');
-//       return;
-//     }
-// console.log('delete........',storeId)
-
-//     try{
-//       const response = await axios.post('https://maryjfinder.com/api/stores/delete', { id: storeId });
-//       {headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${accessToken}`,
-//       },}
-//       console.log('response-=-=-=-=delete',response);
-//       if (response.status === 200) {
-//         console.log('Store deleted successfully:', storeId);
-//         // Refetch the stores after successful deletion
-//         // dispatch(getStores({page: 1, limit: 10}));
-//       } else {
-//         console.error('Failed to delete store:', response);
-//       }
-//     } catch (error) {
-//       console.error('Error deleting store:', error);
-//     }
-    
-//   }
-
   const performanceData = [
     ['Product', 'Impressions', 'Sales', 'Clicks', 'Conversion Rate'],
     ['sleepy edibles', '1200', '1200', '300', '25%'],
@@ -179,9 +116,7 @@ const MyStores = ({navigation}) => {
     ],
   ];
 
-  const openDrawer = () => {
-    navigation.openDrawer();
-  };
+
   return (
     <DrawerSceneWrapper>
       <View style={styles.container}>
@@ -189,9 +124,9 @@ const MyStores = ({navigation}) => {
           <View style={styles.announcementBanner}>
             <Text style={styles.announcementText}>Activate Your Store!</Text>
           </View>
-          {/* <TouchableOpacity onPress={openDrawer}>
-          <New name="menu" size={30} style={{marginLeft: 10, marginTop: 30}} />
-        </TouchableOpacity> */}
+          <TouchableOpacity onPress={openDrawer}>
+          <Entypo name="menu" size={35} style={{color:'black',marginLeft: 10, marginTop: 10}} />
+        </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.iconContainer1,

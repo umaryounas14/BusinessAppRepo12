@@ -18,6 +18,7 @@ import PredictiveAnalysisGraph from '../components/PredictiveAnalysisGraph';
 import MultiLineChart from '../components/MultiLineChart';
 import {materialTheme} from '../constants';
 import DatePickerModal from '../components/DatePickerModal'; 
+import Entypo from 'react-native-vector-icons/Entypo';
 const Intractions = ({navigation}) => {
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null); // For Start Date
@@ -34,12 +35,18 @@ const Intractions = ({navigation}) => {
     setDatePickerVisible(false);
     setCurrentDatePicker(null); // Reset the current date picker
   };
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.announcementBanner}>
           <Text style={styles.announcementText}>Activate Your Store!</Text>
         </View>
+        <TouchableOpacity onPress={openDrawer}>
+         <Entypo name="menu" size={35} style={{color:'black',marginLeft: 10, marginTop: 10}} />
+        </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.iconContainer1,
@@ -94,7 +101,8 @@ const Intractions = ({navigation}) => {
               </Text>
               <Icon name="arrow-down" size={13} color="black" />
             </View>
-        
+            <View>
+          
             <TouchableOpacity
               onPress={() => {
                 setCurrentDatePicker('start');
@@ -125,6 +133,8 @@ const Intractions = ({navigation}) => {
               date={selectedDate || new Date()} // Default to current date if not selected
               mode="date"
             />
+            </View>
+      
 
             <View style={{ marginTop: -5 }}>
               <TouchableOpacity
@@ -234,15 +244,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  dateContainer: {
-    backgroundColor: 'white',
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 20,
-    marginTop: -20,
-  },
   startDateContainer: {
     backgroundColor: 'white',
     paddingHorizontal: 10,
@@ -308,7 +309,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 16,
     backgroundColor: 'white',
     borderRadius: 20,
     borderWidth: 1,
@@ -317,7 +318,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    padding: 10,
+    padding: 8,
     fontSize: 15,
     backgroundColor: 'transparent',
     borderRadius: 20,

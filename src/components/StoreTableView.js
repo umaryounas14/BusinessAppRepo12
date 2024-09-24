@@ -25,7 +25,7 @@ const StoreTableView = () => {
   const [storeIdToDelete, setStoreIdToDelete] = useState(null); 
   const loading = status === 'loading' && !isLoadingMore; // Only show initial loader if not loading more
   const loadingMore = status === 'loading' && isLoadingMore; // Separate loading state for "Load More"
-
+  const [isDeleting, setIsDeleting] = useState(false);
   useEffect(() => {
     if (isFocused) {
       dispatch(getStores({ page: 1 }));
@@ -63,6 +63,7 @@ const StoreTableView = () => {
 
 
   const handleDelete = async (storeId) => {
+    setIsDeleting(true);
     console.log('Deleting store with ID:', storeId);
     try {
       const accessToken = await AsyncStorage.getItem('accessToken');
@@ -93,6 +94,9 @@ const StoreTableView = () => {
     } catch (error) {
       console.error('Error deleting store:', error);
     }
+    finally {
+      setIsDeleting(false);
+     } // Stop loading
   };
   if (status === 'failed') {
     return <Text>Error: {error}</Text>;
@@ -171,7 +175,11 @@ const StoreTableView = () => {
         <ActivityIndicator size="small" color="#0000ff" style={styles.loadMoreIndicator} />
       )}
       
-
+      {isDeleting && (
+      <View style={styles.overlay}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    )}
     </View>
   );
 };
@@ -265,6 +273,16 @@ const styles = StyleSheet.create({
   loadMoreIndicator: {
     marginTop: 10,
     alignSelf: 'center',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Optional: translucent background
   },
 });
 

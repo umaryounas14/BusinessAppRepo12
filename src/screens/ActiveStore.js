@@ -72,7 +72,7 @@ const ActivateStore = ({ navigation, route }) => {
   ];
 
   const businessTypes = [
-    { label: 'Business Type', value: '' }, // Add a default placeholder option
+   // Add a default placeholder option
     { label: 'Dispensaries', value: 'dispensaries' },
     { label: 'Green', value: 'green' }
   ];
@@ -370,6 +370,7 @@ const ActivateStore = ({ navigation, route }) => {
                   <DropdownInput
                     placeholder="Business Type*"
                     data={businessTypes}
+                    placeholderTextColor="black"
                     onSelect={item =>
                       handleDropdownChange('businessType', item.label)
                     }
@@ -470,6 +471,7 @@ const ActivateStore = ({ navigation, route }) => {
                   <DropdownInput
                     placeholder="State*"
                     data={states}
+                      placeholderTextColor="#888"
                     onSelect={item =>
                       handleDropdownChange('businessState', item.label)
                     }
@@ -630,7 +632,7 @@ const ActivateStore = ({ navigation, route }) => {
                {checkboxError ? (
                  <Text style={styles.errorText}>{checkboxError}</Text>
                 ) : null}
-                <Block center flex style={{marginTop: 20}}>
+                <Block center flex style={{marginTop: 20,marginBottom:20}}>
                   <Button
                     size="medium"
                     shadowless
@@ -694,12 +696,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   suggestionsContainer: {
-    maxHeight: 120,
+    maxHeight: 150,
     maxWidth:330,
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 15,
     marginTop: 2,
+    width: width * 0.9, 
+    backgroundColor:'white'
+  },
+  suggestionsScrollView: {
+    maxHeight: 150, // Limit height of scrollable area
   },
   suggestionItem: {
     padding: 5,
@@ -720,6 +727,7 @@ const styles = StyleSheet.create({
   },
   suggestionText: {
     fontSize: 16,
+    color:"black"
   },
   suggestionsScrollView: {
     maxHeight: 150, // Limit the height of the scrollable suggestions list

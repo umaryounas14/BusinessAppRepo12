@@ -145,11 +145,13 @@ const styles = StyleSheet.create({
     width: (Dimensions.get('window').width - 40) / 4, // Adjusted for padding
     textAlign: 'center',
     fontWeight: 'bold',
+    color:"black"
   },
   queryCell: {
     width: 100,
     textAlign: 'left',
     paddingRight: 10,
+    color:"black"
   },
   cellContainer: {
     width: (Dimensions.get('window').width - 40) / 4, // Adjusted for padding

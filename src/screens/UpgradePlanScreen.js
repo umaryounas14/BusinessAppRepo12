@@ -68,22 +68,22 @@ const UpgradePlan = ({navigation}) => {
           <View style={[styles.container]}>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>Basic Listing: Dispensary and product information</Text>
+              <Text style={styles.textColor}>Basic Listing: Dispensary and product information</Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textColor}>
                 Limited Product Listings: List a maximum of 5 products
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>View Store on Map: View store / directions</Text>
+              <Text style={styles.textColor}>View Store on Map: View store / directions</Text>
             </View>
             
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textColor}>
                 Basic Analytics: Basic insights into how often products are
                 viewed.
               </Text>
@@ -119,18 +119,18 @@ const UpgradePlan = ({navigation}) => {
           <View style={styles.container}>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textColor}>
                 Sponsored Listing: Enhanced visibility in search results
               </Text>
             </View>
             
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>Increased Product Listings: List up to 100 products</Text>
+              <Text style={styles.textColor}>Increased Product Listings: List up to 100 products</Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textColor}>
                 Promotional Posts: Ability to post monthly promotional content
                 (e.g., discounts, special events) that users of the chatbot can
                 see.
@@ -138,13 +138,13 @@ const UpgradePlan = ({navigation}) => {
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textColor}>
                 Shopping Cart: Ability for users to add products to cart
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text>
+              <Text style={styles.textColor}>
                 Detailed Analytics: More detailed insights into product views,
                 interaction rates, and user demographics.{' '}
               </Text>
@@ -180,37 +180,37 @@ const UpgradePlan = ({navigation}) => {
           <View style={styles.container}>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text style={styles.textStyle}>
+              <Text style={styles.textColor}>
                 Top-Tier Listing: Highest visibility in search results and on
                 the main page.
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text style={styles.textStyle}>
+              <Text style={styles.textColor}>
                 Unlimited Product Listings: No cap on the number of products
                 listed.
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text style={styles.textStyle}>
+              <Text style={styles.textColor}>
                 Featured Product Promotions: Products are periodically featured
                 as recommendations in the chatbot interactions.
               </Text>
             </View>
             <View style={styles.item}>
               <Text style={styles.bullet}>•</Text>
-              <Text style={styles.textStyle}>
+              <Text style={styles.textColor}>
                 Direct Marketing Tools: Ability to send targeted promotions
                 directly to users based on their search history and preferences.
               </Text>
             </View>
             <View style={[styles.item]}>
               <Text style={styles.bullet}>•</Text>
-              <Text style={styles.textStyle}>
+              <Text style={[styles.textColor,{marginBottom:4}]}>
                 Advanced Analytics: Comprehensive analytics dashboard with
-                real-time data, trends analysis, and user engagement metrics.{' '}
+                real-time data, trends analysis
               </Text>
             </View>
             {/* <View style={styles.item}>
@@ -269,6 +269,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     marginTop: 5,
+    marginBottom:3
   },
   item: {
     flexDirection: 'row',
@@ -281,8 +282,13 @@ const styles = StyleSheet.create({
     alignSelf: 'baseline',
   },
   textStyle:{
-    color:'gray'
+    color:'gray',
+    
+  },
+  textColor:{
+    color:"black"
   }
+
 });
 
 export default UpgradePlan;
