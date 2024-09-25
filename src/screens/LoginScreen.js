@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Linking
 } from 'react-native';
 import {Block, Button, Input, theme} from 'galio-framework';
 import {materialTheme} from '../constants';
@@ -24,7 +25,10 @@ import {client_id, client_secret, web_client_id} from '../constants/configs';
 import {loginUser} from '../redux/slices/loginSlice';
 import {socialLoginGoogle} from '../redux/slices/googleLoginSlice';
 import {BASE_URL} from '../constants/endpoints';
+import { Formik } from 'formik';
+import * as Yup from 'yup'; // For validation
 const {width} = Dimensions.get('window');
+
 const Login = ({navigation}) => {
   // console.log('client_id..........',client_id)
   const dispatch = useDispatch();
@@ -34,6 +38,14 @@ const Login = ({navigation}) => {
   const [active, setActive] = useState({
     email: false,
     password: false,
+  });
+  const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Please enter a valid email address')
+      .required('Email is required'),
+    password: Yup.string()
+      .min(6, 'Password must be at least 6 characters')
+      .required('Password is required'),
   });
   const storeTokensAndUserData = async (
     accessToken,
@@ -157,18 +169,21 @@ const Login = ({navigation}) => {
   const toggleActive = name => {
     setActive({...active, [name]: !active[name]});
   };
-  const loginNow = async () => {
+  const loginNow = async (values) => {
+
     setLoading(true);
     const payload = {
       grant_type: 'password',
       client_id: client_id,
       client_secret: client_secret,
-      username: email,
-      password: password,
+      username: values.email,
+      password: values.password,
       scope: '',
     };
+    console.log('payload',payload)
     try {
       const response = await dispatch(loginUser(payload));
+      console.log('login',response)
       if (response?.payload?.body?.access_token) {
         const {access_token, refresh_token, expires_in, user} =
           response.payload.body;
@@ -181,6 +196,7 @@ const Login = ({navigation}) => {
         const accountType = response.payload.body.user.account_type;
         navigation.navigate('Dashboard', {
           accessToken: response?.payload?.body?.access_token && accountType
+        
         });
         navigation.reset({
           index: 0,
@@ -198,7 +214,19 @@ const Login = ({navigation}) => {
       setLoading(false);
     }
   };
+  const openBusinessSignup = async () => {
+    const url = 'https://maryjfinder.com/business/signup'; // Replace with your signup URL
 
+    // Check if the URL can be opened
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      // Open the URL in an external browser
+      await Linking.openURL(url);
+    } else {
+      // Show an alert if the URL is not supported
+      Alert.alert(`Can't open this URL: ${url}`);
+    }
+  };
   const handleGoogleSignIn = async () => {
     setLoading(true);
     await GoogleSignin.hasPlayServices();
@@ -340,7 +368,7 @@ const Login = ({navigation}) => {
   };
 
   return (
-    <ScrollView  showsVerticalScrollIndicator={false}  vertical={false}>
+    <ScrollView  showsVerticalScrollIndicator={false}  vertical={false} >
       <Block flex middle>
         {/* <TouchableOpacity
           onPress={() => navigation.navigate('Selection')}
@@ -366,74 +394,100 @@ const Login = ({navigation}) => {
           </Text>
         </Block>
         <Block flex>
-          <Block center>
-            <Input
-              color="black"
-              placeholder="Email Address"
-              type="email-address"
-              autoCapitalize="none"
-              bgColor="transparent"
-              onBlur={() => toggleActive('email')}
-              onFocus={() => toggleActive('email')}
-              placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
-              onChangeText={text => handleChange('email', text)}
-              style={[
-                styles.input,
-                active.email ? styles.inputActive : null,
-                {
-                  borderRadius: 15,
-                  borderColor: '#ddd',
-                },
-              ]}
-            />
-            <Input
-              password
-              viewPass
-              color="black"
-              iconColor="black"
-              placeholder="Password"
-              bgColor="transparent"
-              onBlur={() => toggleActive('password')}
-              onFocus={() => toggleActive('password')}
-              placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
-              onChangeText={text => handleChange('password', text)}
-              style={[
-                styles.input,
-                active.password ? styles.inputActive : null,
-                {
-                  borderRadius: 15,
-                  borderColor: '#ddd',
-                  inputColor: 'black',
-                },
-              ]}
-            />
-          </Block>
-          <Block center flex style={{marginTop: 20}}>
-            <Button
-              size="medium"
-              shadowless
-              color="#20B340"
-              style={{height: 48}}
-              onPress={loading ? null : loginNow}>
-              {loading ? <ActivityIndicator color="white" /> : 'Login'}
-            </Button>
-            <Button
-              size="large"
-              color="transparent"
-              shadowless
-              onPress={() => navigation.navigate('BusinessSignUp')}>
-              <Text
-                center
-                color={theme.COLORS.WHITE}
-                size={theme.SIZES.FONT * 0.75}
-                style={{
-                  marginTop: -10,
-                  color: 'black',
-                }}>
-                {"Don't have Account? Signup Now"}
-              </Text>
-            </Button>
-          </Block>
+        
+        <Formik
+  initialValues={{ email: '', password: '' }}
+  validationSchema={validationSchema}
+  onSubmit={(values, { setSubmitting }) => {
+    loginNow(values);
+    setSubmitting(false);
+  }}
+>
+  {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+    <>
+      <Block center>
+        {/* Email Input */}
+        <Input
+          color="black"
+          placeholder="Email Address"
+          type="email-address"
+          autoCapitalize="none"
+          bgColor="transparent"
+          onBlur={handleBlur('email')}
+          onFocus={() => toggleActive('email')}
+          placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+          onChangeText={handleChange('email')}
+          value={values.email}
+          style={[
+            styles.input,
+            active.email ? styles.inputActive : null,
+            { borderRadius: 15, borderColor: '#ddd' },
+          ]}
+        />
+        {/* Email Error */}
+        {touched.email && errors.email && (
+          <Text style={styles.errors}>{errors.email}</Text>
+        )}
+
+        {/* Password Input */}
+        <Input
+          password
+          viewPass
+          color="black"
+          iconColor="black"
+          placeholder="Password"
+          bgColor="transparent"
+          onBlur={handleBlur('password')}
+          onFocus={() => toggleActive('password')}
+          placeholderTextColor={materialTheme.COLORS.PLACEHOLDER}
+          onChangeText={handleChange('password')}
+          value={values.password}
+          style={[
+            styles.input,
+            active.password ? styles.inputActive : null,
+            { borderRadius: 15, borderColor: '#ddd', inputColor: 'black' },
+          ]}
+        />
+        {/* Password Error */}
+        {touched.password && errors.password && (
+            <Text style={styles.errors2}>{errors.password}</Text>
+        )}
+      </Block>
+
+      <Block center flex style={{ marginTop: 20 }}>
+        {/* Login Button */}
+        <Button
+          size="medium"
+          shadowless
+          color="#20B340"
+          style={{ height: 48 }}
+          onPress={loading ? null : handleSubmit} // Call handleSubmit instead of loginNow directly
+        >
+          {loading ? <ActivityIndicator color="white" /> : 'Login'}
+        </Button>
+
+        {/* Sign Up Button */}
+        <Button
+          size="large"
+          color="transparent"
+          shadowless
+          onPress={openBusinessSignup}
+          // onPress={() => navigation.navigate('BusinessSignUp')}
+        >
+          <Text
+            center
+            color={theme.COLORS.WHITE}
+            size={theme.SIZES.FONT * 0.75}
+            style={{ marginTop: -10, color: 'black' }}
+          >
+            {"Don't have Account? Signup Now"}
+          </Text>
+        </Button>
+      </Block>
+    </>
+  )}
+</Formik>
+
           <View style={styles.container}>
             <View style={styles.line} />
             <Text style={styles.orText}>OR</Text>
@@ -466,7 +520,7 @@ const Login = ({navigation}) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            <View style={{marginTop: 15}}>
+            <View style={{marginTop: 15,marginBottom:15}}>
               <TouchableOpacity
                 style={styles.container1}
                 onPress={onAppleButtonPress}>
@@ -568,5 +622,17 @@ const styles = StyleSheet.create({
     marginTop: -10,
     marginLeft: 30,
   },
+  errors:{
+    color: 'red',
+     marginBottom: 5,
+     right:90,
+     fontSize:12
+  },
+  errors2:{
+    color: 'red',
+     marginBottom: 5,
+     right:70,
+     fontSize:12
+  }
 });
 export default Login;

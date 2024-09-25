@@ -42,7 +42,6 @@ const LineChartComponent = ({ data, lineColor, title, label }) => {
         min={0}
         formatLabel={(value) => value}
       />
-      
       <XAxis
         style={{ marginTop: 10 }}
         data={months}

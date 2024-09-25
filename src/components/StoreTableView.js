@@ -75,7 +75,6 @@ const StoreTableView = () => {
       }
   
       const response = await axios.post('https://maryjfinder.com/api/stores/delete', { id: storeId },
-        
           {
             headers: {
             'Content-Type': 'application/json',

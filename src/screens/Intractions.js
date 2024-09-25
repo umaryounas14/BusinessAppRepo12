@@ -19,13 +19,14 @@ import MultiLineChart from '../components/MultiLineChart';
 import {materialTheme} from '../constants';
 import DatePickerModal from '../components/DatePickerModal'; 
 import Entypo from 'react-native-vector-icons/Entypo';
+
 const Intractions = ({navigation}) => {
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null); // For Start Date
   const [endDate, setEndDate] = useState(null); // For End Date
   const [currentDatePicker, setCurrentDatePicker] = useState(null);
   const [searchInput, setSearchInput] = useState('');
-
+  const [inputWidth, setInputWidth] = useState(width * 0.90);
   const handleDateConfirm = date => {
     if (currentDatePicker === 'start') {
       setSelectedDate(date); // Update the selected start date
@@ -83,7 +84,7 @@ const Intractions = ({navigation}) => {
           <KeyboardAvoidingView behavior="padding" enabled>
             <View
               style={{
-                paddingVertical: 50,
+                paddingVertical: 30,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
@@ -108,8 +109,7 @@ const Intractions = ({navigation}) => {
                 setCurrentDatePicker('start');
                 setDatePickerVisible(true);
               }}
-              style={styles.dateContainer}
-            >
+              style={[styles.dateContainer, { width: inputWidth }]}>
               <Icon
                 name="calendar"
                 size={20}
@@ -142,8 +142,8 @@ const Intractions = ({navigation}) => {
                   setCurrentDatePicker('end');
                   setDatePickerVisible(true);
                 }}
-                style={styles.dateContainer}
-              >
+                style={[styles.dateContainer, { width: inputWidth }]}>
+              
                 <Icon
                   name="calendar"
                   size={20}
@@ -168,7 +168,7 @@ const Intractions = ({navigation}) => {
                 mode="date"
               />
             </View>
-            <View style={styles.searchContainer}>
+            <View style={[styles.searchContainer, { width: inputWidth }]}>
               <TextInput
                 value={searchInput}
                 onChangeText={setSearchInput}

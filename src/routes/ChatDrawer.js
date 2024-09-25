@@ -17,7 +17,6 @@ const CustomDrawerContent = ({
   fetchMoreConversations,
 }) => {
   const { theme, toggleTheme, isDarkTheme } = useTheme();
-
   const navigateToChat = (threadId) => {
     navigation.navigate('ChatScreen', { threadId });
   };
@@ -90,8 +89,7 @@ const CustomDrawerContent = ({
           </TouchableOpacity>
           <TouchableOpacity
            style={[styles.button, styles.SignUpInBtn]}
-            onPress={handleLogin}
-          >
+            onPress={handleLogin} >
             <Text style={[styles.buttonText, styles.signUpButtonText]}>Login</Text>
           </TouchableOpacity>
         </View>
@@ -111,7 +109,6 @@ const CustomDrawerContent = ({
           {isDarkTheme ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         </Text>
       </TouchableOpacity>
-    
     </View>
   );
 };
@@ -136,7 +133,6 @@ const ChatDrawer = ({ navigation }) => {
         headers: headers,
         params: { page: currentPageRef.current }
       });
-
       if (response.data.status_code === 200) {
         setConversations(response.data.body.response); // Set initial conversations
         currentPageRef.current += 1; // Update currentPage using ref

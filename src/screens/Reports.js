@@ -20,7 +20,7 @@ const {width, height} = Dimensions.get('window');
 
 const Reports = ({navigation}) => {
   const [startDate, setStartDate] = useState(null);
- 
+  const [inputWidth, setInputWidth] = useState(width * 0.90);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [selectedMetrics, setSelectedMetrics] = useState({});
@@ -99,8 +99,8 @@ const Reports = ({navigation}) => {
             <Text style={styles.announcementText}>Activate Your Store!</Text>
           </View>
           <TouchableOpacity onPress={openDrawer}>
-     <Entypo name="menu" size={35} style={{color:'black',marginLeft: 10, marginTop: 10}} />
- </TouchableOpacity>
+          <Entypo name="menu" size={35} style={{color:'black',marginLeft: 10, marginTop: 10}} />
+          </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.iconContainer1,
@@ -163,7 +163,7 @@ const Reports = ({navigation}) => {
                 setCurrentDatePicker('start');
                 setDatePickerVisible(true);
               }}
-              style={styles.dateContainer}>
+              style={[styles.dateContainer, { width: inputWidth }]}>
               <Icon
                 name="calendar"
                 size={20}
@@ -194,8 +194,7 @@ const Reports = ({navigation}) => {
                   setCurrentDatePicker('end');
                   setDatePickerVisible(true);
                 }}
-                style={styles.dateContainer}
-              >
+                style={[styles.dateContainer, { width: inputWidth }]} >
                 <Icon
                   name="calendar"
                   size={20}
@@ -220,7 +219,7 @@ const Reports = ({navigation}) => {
                 mode="date"
               />
 
-              <View style={styles.searchContainer}>
+             <View style={[styles.searchContainer, { width: inputWidth }]}>
               <TextInput
                 value={searchInput}
                 onChangeText={setSearchInput}

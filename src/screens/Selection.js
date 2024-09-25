@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet,Linking  } from 'react-native';
 import {Button} from 'galio-framework';
 
 const Selection = ({ navigation }) => {
@@ -7,7 +7,19 @@ const Selection = ({ navigation }) => {
     // Handle navigation or any other functionality here
     navigation.navigate('Main');
   };
+  const openBusinessSignup = async () => {
+    const url = 'https://maryjfinder.com/business/signup'; // Replace with your signup URL
 
+    // Check if the URL can be opened
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      // Open the URL in an external browser
+      await Linking.openURL(url);
+    } else {
+      // Show an alert if the URL is not supported
+      Alert.alert(`Can't open this URL: ${url}`);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -32,7 +44,8 @@ const Selection = ({ navigation }) => {
           shadowless
           color="#20B340"
           style={[styles.button, { width: 250 }]} 
-          onPress={() => navigation.navigate('BusinessSignUp')}>
+          onPress={openBusinessSignup}>
+          {/* // onPress={() => navigation.navigate('BusinessSignUp')}> */}
           Create Business Account
         </Button>
         <Button

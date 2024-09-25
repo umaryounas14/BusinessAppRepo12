@@ -28,7 +28,6 @@ const ProductCard = ({ product, onPress }) => {
       </View>
     );
   };
-
   return (
     <Card style={styles.card}>
       <Carousel
